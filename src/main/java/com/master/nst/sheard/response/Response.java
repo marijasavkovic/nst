@@ -7,33 +7,20 @@ import java.util.List;
 public class Response<T> implements Serializable{
     private T data;
     private ResponseStatus status = ResponseStatus.OK;
-    private String message;
     private List<Error> errors;
 
     public Response(T data) {
         this.data = data;
     }
 
-    public Response(T data, ResponseStatus status, String message, List<Error> errors) {
+    public Response(T data, ResponseStatus status, List<Error> errors) {
         this.data = data;
         this.status = status;
-        this.message = message;
         this.errors = errors;
     }
 
-    public Response(Throwable throwable) {
-        status = ResponseStatus.INTERNAL_SERVER_ERROR;
-        message = throwable.getMessage();
-    }
-
-    public Response(ResponseStatus status, Throwable throwable) {
+    public Response(ResponseStatus status) {
         this.status = status;
-        this.message = throwable.getMessage();
-    }
-
-    public Response(ResponseStatus status, String message) {
-        this.status = status;
-        this.message = message;
     }
 
     public Response(ResponseStatus status, List<Error> errors) {
@@ -60,14 +47,6 @@ public class Response<T> implements Serializable{
 
     public void setStatus(final ResponseStatus status) {
         this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(final String message) {
-        this.message = message;
     }
 
     public List<Error> getErrors() {

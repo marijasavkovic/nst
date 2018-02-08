@@ -8,5 +8,6 @@
     <changeSet id="1" author="Marija Savkovic">
         <sqlFile path="scripts/V20180205.1__level_of_studies_data.sql" relativeToChangelogFile="true"/>
         <sqlFile path="scripts/V20180205.2__department_data.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="scripts/V20180208.1__teaching_type_data.sql" relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>

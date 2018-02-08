@@ -1,51 +1,54 @@
 package com.master.nst.facade.impl;
 
 import com.master.nst.facade.CourseFacade;
-import com.master.nst.mapper.DepartmentMapper;
-import com.master.nst.mapper.LevelOfStudiesMapper;
 import com.master.nst.model.department.Department;
 import com.master.nst.model.levelofstudies.LevelOfStudies;
+import com.master.nst.model.teachingtype.TeachingType;
 import com.master.nst.service.DepartmentService;
 import com.master.nst.service.LevelOfStudiesService;
+import com.master.nst.service.TeachingTypeService;
+import com.master.nst.sheard.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Component
-@Transactional
+@RestController
+@RequestMapping(path = "course/")
 public class CourseFacadeImpl implements CourseFacade {
 
     private final LevelOfStudiesService levelOfStudiesService;
     private final DepartmentService departmentService;
-
-    private final LevelOfStudiesMapper levelOfStudiesMapper;
-    private final DepartmentMapper departmentMapper;
+    private final TeachingTypeService teachingTypeService;
 
     @Autowired
     public CourseFacadeImpl(
         final LevelOfStudiesService levelOfStudiesService,
         final DepartmentService departmentService,
-
-        final LevelOfStudiesMapper levelOfStudiesMapper,
-        final DepartmentMapper departmentMapper)
+        final TeachingTypeService teachingTypeService)
     {
         this.levelOfStudiesService = levelOfStudiesService;
         this.departmentService = departmentService;
-
-        this.levelOfStudiesMapper = levelOfStudiesMapper;
-        this.departmentMapper = departmentMapper;
-
+        this.teachingTypeService = teachingTypeService;
     }
 
     @Override
-    public List<LevelOfStudies> findAllLevelOfStudies() {
-        return levelOfStudiesMapper.mapToModelList(levelOfStudiesService.findAll());
+    @GetMapping("findAllLevelsOfStudies")
+    public Response<List<LevelOfStudies>> findAllLevelOfStudies() {
+        return levelOfStudiesService.findAll();
     }
 
     @Override
-    public List<Department> findAllDepartments() {
-        return departmentMapper.mapToModelList(departmentService.findAll());
+    @GetMapping("findAllDepartments")
+    public Response<List<Department>> findAllDepartments() {
+        return departmentService.findAll();
+    }
+
+    @Override
+    @GetMapping("findAllTeachingTypes")
+    public Response<List<TeachingType>> findAllTeachingTypes() {
+        return teachingTypeService.findAll();
     }
 }

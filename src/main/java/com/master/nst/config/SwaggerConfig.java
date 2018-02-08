@@ -16,7 +16,7 @@ public class SwaggerConfig {
 
         return new Docket(DocumentationType.SWAGGER_2)
             .select()
-            .apis(RequestHandlerSelectors.basePackage("com.master.nst.endpoint"))
+            .apis(RequestHandlerSelectors.basePackage("com.master.nst.facade.impl"))
             .build();
     }
 }
