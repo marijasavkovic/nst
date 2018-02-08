@@ -9,6 +9,7 @@
         <sqlFile path="scripts/V20180205.1__level_of_studies.sql" relativeToChangelogFile="true"/>
         <sqlFile path="scripts/V20180205.2__department.sql" relativeToChangelogFile="true"/>
         <sqlFile path="scripts/V20180208.1__teaching_type.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="scripts/V20180208.2__employee.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
 </databaseChangeLog>
