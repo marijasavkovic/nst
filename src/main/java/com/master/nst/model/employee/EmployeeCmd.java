@@ -3,7 +3,7 @@ package com.master.nst.model.employee;
 import com.master.nst.domain.EmployeeTitle;
 import com.master.nst.domain.EmployeeVocation;
 import com.master.nst.sheard.errors.ErrorMessages;
-import com.master.nst.validator.ValidationGroups;
+import com.master.nst.sheard.validation.ValidationGroups;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;

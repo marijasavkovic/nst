@@ -1,4 +1,4 @@
-package com.master.nst.validator;
+package com.master.nst.sheard.validation;
 
 import javax.validation.groups.Default;
 

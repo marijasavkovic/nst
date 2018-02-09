@@ -6,6 +6,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
-public interface EmployeeRepository extends BaseRepository<EmployeeEntity, Long>{}
+public interface EmployeeRepository extends BaseRepository<EmployeeEntity, Long>{
+
+    Optional<EmployeeEntity> findByPersonalIdentificationNumber(String personalIdentificationNumber);
+
+}
