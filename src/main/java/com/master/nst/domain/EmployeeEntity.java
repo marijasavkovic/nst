@@ -2,6 +2,8 @@ package com.master.nst.domain;
 
 import com.master.nst.sheard.domain.BaseEntity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -25,14 +27,14 @@ public class EmployeeEntity extends BaseEntity<Long> {
     @Column(name = "surname", nullable = false)
     private String surname;
 
-    @Column(name = "personal_identity_number", nullable = false)
-    private String personalIdentityNumber;
+    @Column(name = "personal_identification_number", nullable = false)
+    private String personalIdentificationNumber;
 
     @Column(name = "date_of_birth", nullable = false)
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column(name = "date_of_employment", nullable = false)
-    private String dateOfEmployment;
+    private LocalDate dateOfEmployment;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -69,27 +71,27 @@ public class EmployeeEntity extends BaseEntity<Long> {
         this.surname = surname;
     }
 
-    public String getPersonalIdentityNumber() {
-        return personalIdentityNumber;
+    public String getPersonalIdentificationNumber() {
+        return personalIdentificationNumber;
     }
 
-    public void setPersonalIdentityNumber(final String personalIdentityNumber) {
-        this.personalIdentityNumber = personalIdentityNumber;
+    public void setPersonalIdentificationNumber(final String personalIdentificationNumber) {
+        this.personalIdentificationNumber = personalIdentificationNumber;
     }
 
-    public String getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(final String dateOfBirth) {
+    public void setDateOfBirth(final LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getDateOfEmployment() {
+    public LocalDate getDateOfEmployment() {
         return dateOfEmployment;
     }
 
-    public void setDateOfEmployment(final String dateOfEmployment) {
+    public void setDateOfEmployment(final LocalDate dateOfEmployment) {
         this.dateOfEmployment = dateOfEmployment;
     }
 

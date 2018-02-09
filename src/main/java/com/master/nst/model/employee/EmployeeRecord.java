@@ -4,14 +4,15 @@ import com.master.nst.domain.EmployeeTitle;
 import com.master.nst.domain.EmployeeVocation;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 public class EmployeeRecord implements Serializable{
 
     private Long id;
     private String name;
     private String surname;
-    private String personalIdentityNumber;
-    private String dateOfEmployment;
+    private String personalIdentificationNumber;
+    private LocalDate dateOfEmployment;
     private EmployeeTitle title;
     private EmployeeVocation vocation;
 
@@ -39,19 +40,19 @@ public class EmployeeRecord implements Serializable{
         this.surname = surname;
     }
 
-    public String getPersonalIdentityNumber() {
-        return personalIdentityNumber;
+    public String getPersonalIdentificationNumber() {
+        return personalIdentificationNumber;
     }
 
-    public void setPersonalIdentityNumber(final String personalIdentityNumber) {
-        this.personalIdentityNumber = personalIdentityNumber;
+    public void setPersonalIdentificationNumber(final String personalIdentificationNumber) {
+        this.personalIdentificationNumber = personalIdentificationNumber;
     }
 
-    public String getDateOfEmployment() {
+    public LocalDate getDateOfEmployment() {
         return dateOfEmployment;
     }
 
-    public void setDateOfEmployment(final String dateOfEmployment) {
+    public void setDateOfEmployment(final LocalDate dateOfEmployment) {
         this.dateOfEmployment = dateOfEmployment;
     }
 

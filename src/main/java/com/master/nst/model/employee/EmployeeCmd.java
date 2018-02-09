@@ -2,20 +2,43 @@ package com.master.nst.model.employee;
 
 import com.master.nst.domain.EmployeeTitle;
 import com.master.nst.domain.EmployeeVocation;
+import com.master.nst.sheard.errors.ErrorMessages;
+import com.master.nst.validator.ValidationGroups;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Employee implements Serializable {
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
+public class EmployeeCmd implements Serializable{
+
+    @NotNull(message = ErrorMessages.ID_NULL, groups = ValidationGroups.Edit.class)
     private Long id;
+
+    @NotEmpty(message = ErrorMessages.NAME_EMPTY)
     private String name;
+
+    @NotEmpty(message = ErrorMessages.SURNAME_EMPTY)
     private String surname;
+
+    @Pattern(regexp = "^(\\d{13})?$", message = ErrorMessages.PIN_13_NUM)
     private String personalIdentificationNumber;
+
+    @NotNull(message = ErrorMessages.DATE_OF_BIRTH_NULL)
     private LocalDate dateOfBirth;
+
+    @NotNull(message = ErrorMessages.DATE_OF_EMPLOYMENT_NULL)
     private LocalDate dateOfEmployment;
+
+    @NotEmpty(message = ErrorMessages.ADDRESS_EMPTY)
     private String address;
+
+    @NotNull(message = ErrorMessages.TITLE_NULL)
     private EmployeeTitle title;
+
+    @NotNull(message = ErrorMessages.VOCATION_NULL)
     private EmployeeVocation vocation;
 
     public Long getId() {
