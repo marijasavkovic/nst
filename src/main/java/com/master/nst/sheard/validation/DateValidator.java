@@ -1,23 +1,20 @@
 package com.master.nst.sheard.validation;
 
+import com.master.nst.sheard.exception.ValidationException;
 import org.springframework.util.Assert;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DateValidator {
 
-    public static List<Error> dateInFuture(LocalDate date, String columnName) {
+    public static void dateInPast(Date date, String columnName) {
         Assert.notNull(date, columnName.toUpperCase() +" cannot be null!");
 
-        List<Error> errors = new ArrayList<>();
-
-        if (date != null && !date.isBefore(LocalDate.now())) {
-            errors.add(new Error(columnName.toUpperCase()+" must be in the future!"));
-            return errors;
+        if (date != null && !date.before(new Date())) {
+            throw new ValidationException(columnName + " must be in the past!");
         }
-
-        return errors;
     }
 }

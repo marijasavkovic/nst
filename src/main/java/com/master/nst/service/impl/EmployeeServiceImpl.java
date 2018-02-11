@@ -1,5 +1,6 @@
 package com.master.nst.service.impl;
 
+import com.master.nst.domain.EmployeeEntity;
 import com.master.nst.mapper.EmployeeMapper;
 import com.master.nst.model.employee.Employee;
 import com.master.nst.model.employee.EmployeeCmd;
@@ -8,6 +9,7 @@ import com.master.nst.repository.EmployeeRepository;
 import com.master.nst.service.EmployeeService;
 import com.master.nst.sheard.response.Response;
 import com.master.nst.sheard.response.ResponseStatus;
+import com.master.nst.validator.employee.EmployeeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +23,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
+    private final EmployeeValidator.Add employeeValidatorAdd;
+    private final EmployeeValidator.Edit employeeValidatorEdit;
 
     @Autowired
-    public EmployeeServiceImpl(final EmployeeRepository employeeRepository, final EmployeeMapper employeeMapper) {
+    public EmployeeServiceImpl(final EmployeeRepository employeeRepository,
+                               final EmployeeMapper employeeMapper,
+                               final EmployeeValidator.Add employeeValidatorAdd,
+                               final EmployeeValidator.Edit employeeValidatorEdit
+    ) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
+        this.employeeValidatorAdd = employeeValidatorAdd;
+        this.employeeValidatorEdit = employeeValidatorEdit;
     }
 
     @Override
@@ -41,11 +51,29 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Response<Employee> add(final EmployeeCmd employeeCmd) {
-        return null;
+        return new Response<>(addEmployee(employeeCmd));
     }
 
     @Override
-    public Response<Employee> edit(final EmployeeCmd employeeCmd) {
-        return null;
+    public Response<Employee> edit(final Long employeeId, final EmployeeCmd employeeCmd) {
+        return new Response<>(editEmployee(employeeId, employeeCmd));
+    }
+
+    private Employee addEmployee (EmployeeCmd employeeCmd) {
+        employeeValidatorAdd.validate(employeeCmd);
+
+        EmployeeEntity employeeEntity = employeeMapper.mapToEntity(employeeCmd);
+        return employeeMapper.mapToModel(employeeRepository.save(employeeEntity));
+    }
+
+    private Employee editEmployee (Long employeeId, EmployeeCmd employeeCmd){
+        employeeValidatorEdit.validate(employeeId, employeeCmd);
+
+        EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
+                                                          .orElseThrow(RuntimeException::new);
+
+        employeeMapper.updateEntityFromModel(employeeCmd, employeeEntity);
+        return employeeMapper.mapToModel(employeeRepository.save(employeeEntity));
+
     }
 }

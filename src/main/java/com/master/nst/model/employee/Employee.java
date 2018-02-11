@@ -5,6 +5,7 @@ import com.master.nst.domain.EmployeeVocation;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Employee implements Serializable {
 
@@ -12,8 +13,8 @@ public class Employee implements Serializable {
     private String name;
     private String surname;
     private String personalIdentificationNumber;
-    private LocalDate dateOfBirth;
-    private LocalDate dateOfEmployment;
+    private Date dateOfBirth;
+    private Date dateOfEmployment;
     private String address;
     private EmployeeTitle title;
     private EmployeeVocation vocation;
@@ -50,19 +51,19 @@ public class Employee implements Serializable {
         this.personalIdentificationNumber = personalIdentificationNumber;
     }
 
-    public LocalDate getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(final LocalDate dateOfBirth) {
+    public void setDateOfBirth(final Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public LocalDate getDateOfEmployment() {
+    public Date getDateOfEmployment() {
         return dateOfEmployment;
     }
 
-    public void setDateOfEmployment(final LocalDate dateOfEmployment) {
+    public void setDateOfEmployment(final Date dateOfEmployment) {
         this.dateOfEmployment = dateOfEmployment;
     }
 

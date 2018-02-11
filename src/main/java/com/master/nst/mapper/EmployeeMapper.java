@@ -7,6 +7,7 @@ import com.master.nst.model.employee.EmployeeRecord;
 import com.master.nst.sheard.constants.Constants;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -19,5 +20,9 @@ public interface EmployeeMapper {
     Employee mapToModel(EmployeeEntity entity);
 
     List<EmployeeRecord> mapToModelList (List<EmployeeEntity> levelOfStudiesEntities);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "personalIdentificationNumber", ignore = true)
+    void updateEntityFromModel(EmployeeCmd model, @MappingTarget EmployeeEntity entity);
 
 }

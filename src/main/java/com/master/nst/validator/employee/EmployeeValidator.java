@@ -4,22 +4,20 @@ import com.master.nst.domain.EmployeeEntity;
 import com.master.nst.model.employee.EmployeeCmd;
 import com.master.nst.repository.EmployeeRepository;
 import com.master.nst.service.EmployeeService;
+import com.master.nst.sheard.exception.ValidationException;
+import com.master.nst.sheard.validation.DateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Component
 public class EmployeeValidator {
 
-    private final EmployeeService employeeService;
     private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeeValidator(final EmployeeService employeeService, final EmployeeRepository employeeRepository) {
-        this.employeeService = employeeService;
+    public EmployeeValidator(final EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
@@ -27,16 +25,16 @@ public class EmployeeValidator {
     public class Add {
 
         public void validate(EmployeeCmd employeeCmd) {
-            List<Error> errors = new ArrayList<>();
 
             String personalIndentificationNumber = employeeCmd.getPersonalIdentificationNumber();
-            final Optional<EmployeeEntity> employeeEntity = employeeRepository.findByPersonalIdentificationNumber(
-                personalIndentificationNumber);
+            final Optional<EmployeeEntity> employeeEntity = employeeRepository
+                    .findByPersonalIdentificationNumber(personalIndentificationNumber);
 
-            if(employeeEntity.isPresent()){
-                errors.add(new Error("Employee with this personal indentification number already exists"));
+            if (employeeEntity.isPresent()) {
+                throw new ValidationException("Employee with this personal indentification number already exists");
             }
 
+            DateValidator.dateInPast(employeeCmd.getDateOfBirth(), "Date of birth");
 
         }
     }
@@ -44,8 +42,12 @@ public class EmployeeValidator {
     @Component
     public class Edit {
 
-        public void validate(Long employeId, EmployeeCmd employeeCmd) {
+        public void validate(Long employeeId, EmployeeCmd employeeCmd) {
 
+            EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
+                                                              .orElseThrow(RuntimeException::new);
+
+            DateValidator.dateInPast(employeeCmd.getDateOfBirth(), "Date of birth");
         }
     }
 }

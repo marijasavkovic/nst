@@ -2,7 +2,7 @@ package com.master.nst.domain;
 
 import com.master.nst.sheard.domain.BaseEntity;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "employee")
@@ -31,10 +33,12 @@ public class EmployeeEntity extends BaseEntity<Long> {
     private String personalIdentificationNumber;
 
     @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
+    @Temporal(TemporalType.DATE)
+    private Date dateOfBirth;
 
     @Column(name = "date_of_employment", nullable = false)
-    private LocalDate dateOfEmployment;
+    @Temporal(TemporalType.DATE)
+    private Date dateOfEmployment;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -79,19 +83,19 @@ public class EmployeeEntity extends BaseEntity<Long> {
         this.personalIdentificationNumber = personalIdentificationNumber;
     }
 
-    public LocalDate getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(final LocalDate dateOfBirth) {
+    public void setDateOfBirth(final Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public LocalDate getDateOfEmployment() {
+    public Date getDateOfEmployment() {
         return dateOfEmployment;
     }
 
-    public void setDateOfEmployment(final LocalDate dateOfEmployment) {
+    public void setDateOfEmployment(final Date dateOfEmployment) {
         this.dateOfEmployment = dateOfEmployment;
     }
 

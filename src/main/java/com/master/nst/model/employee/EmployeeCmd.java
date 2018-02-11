@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -27,10 +28,10 @@ public class EmployeeCmd implements Serializable{
     private String personalIdentificationNumber;
 
     @NotNull(message = ErrorMessages.DATE_OF_BIRTH_NULL)
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
 
     @NotNull(message = ErrorMessages.DATE_OF_EMPLOYMENT_NULL)
-    private LocalDate dateOfEmployment;
+    private Date dateOfEmployment;
 
     @NotEmpty(message = ErrorMessages.ADDRESS_EMPTY)
     private String address;
@@ -73,19 +74,19 @@ public class EmployeeCmd implements Serializable{
         this.personalIdentificationNumber = personalIdentificationNumber;
     }
 
-    public LocalDate getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(final LocalDate dateOfBirth) {
+    public void setDateOfBirth(final Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public LocalDate getDateOfEmployment() {
+    public Date getDateOfEmployment() {
         return dateOfEmployment;
     }
 
-    public void setDateOfEmployment(final LocalDate dateOfEmployment) {
+    public void setDateOfEmployment(final Date dateOfEmployment) {
         this.dateOfEmployment = dateOfEmployment;
     }
 
