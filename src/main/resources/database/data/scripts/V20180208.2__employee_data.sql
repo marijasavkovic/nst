@@ -1,1 +1,0 @@
-insert into employee (name, surname, personal_identification_number, date_of_birth, date_of_employment, address, title, vocation) values ('name', 'surname', '1234567891234', '1980-02-02', '2010-02-02', 'address', 'dr', 'profesor');

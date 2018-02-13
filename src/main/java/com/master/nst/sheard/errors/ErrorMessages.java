@@ -11,4 +11,10 @@ public class ErrorMessages {
     public static final String ADDRESS_EMPTY = "Address can not be empty";
     public static final String TITLE_NULL = "Title can not be null";
     public static final String VOCATION_NULL = "Vocation can not be null";
+    public static final String ESPB_NULL = "Espb can not be null";
+    public static final String GOAL_EMPTY = "Goal can not be empty";
+    public static final String METHOD_OF_EVALUATION_EMPTY = "Method Of Evaluation can not be empty";
+    public static final String LEVEL_OF_STUDIES_NULL = "Level of studies can not be null";
+    public static final String DEPARTMENT_NULL = "Department can not be null";
+    public static final String LECTURER_LIST_EMPTY = "List of Lecturers can not be empty";
 }

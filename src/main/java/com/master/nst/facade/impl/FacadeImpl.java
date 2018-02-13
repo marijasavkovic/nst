@@ -1,12 +1,16 @@
 package com.master.nst.facade.impl;
 
 import com.master.nst.facade.Facade;
+import com.master.nst.model.course.Course;
+import com.master.nst.model.course.CourseCmd;
+import com.master.nst.model.course.CourseRecord;
 import com.master.nst.model.department.Department;
 import com.master.nst.model.employee.Employee;
 import com.master.nst.model.employee.EmployeeCmd;
 import com.master.nst.model.employee.EmployeeRecord;
 import com.master.nst.model.levelofstudies.LevelOfStudies;
 import com.master.nst.model.teachingtype.TeachingType;
+import com.master.nst.service.CourseService;
 import com.master.nst.service.DepartmentService;
 import com.master.nst.service.EmployeeService;
 import com.master.nst.service.LevelOfStudiesService;
@@ -31,19 +35,22 @@ public class FacadeImpl implements Facade {
     private final DepartmentService departmentService;
     private final TeachingTypeService teachingTypeService;
     private final EmployeeService employeeService;
+    private final CourseService courseService;
 
     @Autowired
     public FacadeImpl(
         final LevelOfStudiesService levelOfStudiesService,
         final DepartmentService departmentService,
         final TeachingTypeService teachingTypeService,
-        final EmployeeService employeeService
+        final EmployeeService employeeService,
+        final CourseService courseService
         )
     {
         this.levelOfStudiesService = levelOfStudiesService;
         this.departmentService = departmentService;
         this.teachingTypeService = teachingTypeService;
         this.employeeService = employeeService;
+        this.courseService = courseService;
     }
 
     @Override
@@ -86,5 +93,23 @@ public class FacadeImpl implements Facade {
     @PutMapping("employee/{employeeId}")
     public Response<Employee> editEmployee(@PathVariable Long employeeId, @RequestBody EmployeeCmd employeeCmd) {
         return employeeService.edit(employeeId, employeeCmd);
+    }
+
+    @Override
+    @GetMapping("course/findAllCourses")
+    public Response<List<CourseRecord>> findAllCourses() {
+        return courseService.findAll();
+    }
+
+    @Override
+    @GetMapping("course/{courseId}")
+    public Response<Course> findCourseById(@PathVariable Long courseId) {
+        return courseService.findById(courseId);
+    }
+
+    @Override
+    @PostMapping("course")
+    public Response<Course> addCourse(@RequestBody CourseCmd courseCmd) {
+        return courseService.add(courseCmd);
     }
 }

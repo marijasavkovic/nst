@@ -1,5 +1,8 @@
 package com.master.nst.facade;
 
+import com.master.nst.model.course.Course;
+import com.master.nst.model.course.CourseCmd;
+import com.master.nst.model.course.CourseRecord;
 import com.master.nst.model.department.Department;
 import com.master.nst.model.employee.Employee;
 import com.master.nst.model.employee.EmployeeCmd;
@@ -25,4 +28,10 @@ public interface Facade {
     Response<Employee> addEmployee(EmployeeCmd employeeCmd);
 
     Response<Employee> editEmployee(Long employeeId, EmployeeCmd employeeCmd);
+
+    Response<List<CourseRecord>> findAllCourses();
+
+    Response<Course> findCourseById(Long id);
+
+    Response<Course> addCourse(CourseCmd courseCmd);
 }
