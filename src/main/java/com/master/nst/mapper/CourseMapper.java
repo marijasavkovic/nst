@@ -33,5 +33,6 @@ public interface CourseMapper {
     LecturerEntity lecturerCmdToLecturerEntity (LecturerCmd lecturerCmd);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "lecturerList", ignore = true)
     void updateEntityFromModel(CourseCmd courseCmd, @MappingTarget CourseEntity courseEntity);
 }

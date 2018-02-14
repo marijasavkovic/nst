@@ -43,7 +43,7 @@ public class CourseEntity extends BaseEntity<Long> {
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name = "course_id")
     private List<LecturerEntity> lecturerList;
 
@@ -120,6 +120,8 @@ public class CourseEntity extends BaseEntity<Long> {
             .append(id)
             .append("name")
             .append(name)
+            .append("department")
+            .append(department)
             .toString();
     }
 }

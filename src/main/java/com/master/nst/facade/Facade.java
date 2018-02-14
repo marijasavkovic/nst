@@ -34,4 +34,6 @@ public interface Facade {
     Response<Course> findCourseById(Long id);
 
     Response<Course> addCourse(CourseCmd courseCmd);
+
+    Response<Course> editCourse(Long courseId, CourseCmd courseCmd);
 }

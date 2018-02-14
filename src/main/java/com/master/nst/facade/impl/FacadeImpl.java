@@ -112,4 +112,10 @@ public class FacadeImpl implements Facade {
     public Response<Course> addCourse(@RequestBody CourseCmd courseCmd) {
         return courseService.add(courseCmd);
     }
+
+    @Override
+    @PutMapping("course/{courseId}")
+    public Response<Course> editCourse(@PathVariable Long courseId, @RequestBody CourseCmd courseCmd) {
+        return courseService.edit(courseId, courseCmd);
+    }
 }

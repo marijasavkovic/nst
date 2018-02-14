@@ -1,13 +1,10 @@
 package com.master.nst.service.impl;
 
 import com.master.nst.domain.CourseEntity;
-import com.master.nst.domain.EmployeeEntity;
 import com.master.nst.mapper.CourseMapper;
 import com.master.nst.model.course.Course;
 import com.master.nst.model.course.CourseCmd;
 import com.master.nst.model.course.CourseRecord;
-import com.master.nst.model.employee.Employee;
-import com.master.nst.model.employee.EmployeeCmd;
 import com.master.nst.repository.CourseRepository;
 import com.master.nst.service.CourseService;
 import com.master.nst.sheard.response.Response;
@@ -50,7 +47,7 @@ public class CourseServiceImpl implements CourseService{
 
     @Override
     public Response<Course> edit(final Long courseId, final CourseCmd courseCmd) {
-        return null;
+        return new Response<>(editCourse(courseId, courseCmd));
     }
 
     private Course addCourse (CourseCmd courseCmd) {
@@ -60,13 +57,19 @@ public class CourseServiceImpl implements CourseService{
         return courseMapper.mapToModel(courseRepository.save(courseEntity));
     }
 
-    private Course editEmployee (Long courseId, CourseCmd courseCmd){
+    private Course editCourse (Long courseId, CourseCmd courseCmd){
 //        employeeValidatorEdit.validate(courseId, courseCmd);
 
         CourseEntity courseEntity = courseRepository.findById(courseId)
             .orElseThrow(RuntimeException::new);
 
         courseMapper.updateEntityFromModel(courseCmd, courseEntity);
+
+        System.out.println("*******************");
+        System.out.println("*******************");
+        System.out.println("*******************");
+        System.out.println(courseEntity.getLecturerList());
+
         return courseMapper.mapToModel(courseRepository.save(courseEntity));
 
     }

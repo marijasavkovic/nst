@@ -86,15 +86,7 @@ public abstract class CourseMapperDecorator implements CourseMapper {
             courseEntity.setLevelOfStudies(levelOfStudiesEntity);
         }
 
-        if (model.getLecturerList() != null && !model.getLecturerList().isEmpty()) {
-            List<LecturerEntity> list = new ArrayList<LecturerEntity>(model.getLecturerList().size());
-            for (LecturerCmd lecturerCmd : model.getLecturerList()) {
-                LecturerEntity lecturerEntity = lecturerCmdToLecturerEntity(lecturerCmd);
-                lecturerEntity.setCourse(courseEntity);
-                list.add(lecturerEntity);
-            }
-            courseEntity.setLecturerList(list);
-        }
+        mapLecturerList(model.getLecturerList(), courseEntity);
         return courseEntity;
     }
 
@@ -120,7 +112,39 @@ public abstract class CourseMapperDecorator implements CourseMapper {
     }
 
     @Override
-    public void updateEntityFromModel(final CourseCmd courseCmd, final CourseEntity courseEntity) {
+    public void updateEntityFromModel(final CourseCmd model, final CourseEntity entity) {
+        if ( model == null ) {
+            return;
+        }
+        courseMapper.updateEntityFromModel(model, entity);
 
+        if (model.getDepartmentId() != null) {
+            DepartmentEntity departmentEntity = departmentRepository
+                .findById(model.getDepartmentId())
+                .orElseThrow(RuntimeException::new);
+            entity.setDepartment(departmentEntity);
+        }
+
+        if (model.getLevelOfStudiesId() != null) {
+            LevelOfStudiesEntity levelOfStudiesEntity = levelOfStudiesRepository
+                .findById(model.getLevelOfStudiesId())
+                .orElseThrow(RuntimeException::new);
+            entity.setLevelOfStudies(levelOfStudiesEntity);
+        }
+
+        mapLecturerList(model.getLecturerList(), entity);
+
+    }
+
+    private void mapLecturerList (List<LecturerCmd> lecturers, CourseEntity entity){
+        if (lecturers != null && !lecturers.isEmpty()) {
+            List<LecturerEntity> list = new ArrayList<LecturerEntity>(lecturers.size());
+            for (LecturerCmd lecturerCmd : lecturers) {
+                LecturerEntity lecturerEntity = lecturerCmdToLecturerEntity(lecturerCmd);
+                lecturerEntity.setCourse(entity);
+                list.add(lecturerEntity);
+            }
+            entity.setLecturerList(list);
+        }
     }
 }
