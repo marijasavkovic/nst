@@ -65,10 +65,6 @@ public class CourseServiceImpl implements CourseService{
 
         courseMapper.updateEntityFromModel(courseCmd, courseEntity);
 
-        System.out.println("*******************");
-        System.out.println("*******************");
-        System.out.println("*******************");
-        System.out.println(courseEntity.getLecturerList());
 
         return courseMapper.mapToModel(courseRepository.save(courseEntity));
 

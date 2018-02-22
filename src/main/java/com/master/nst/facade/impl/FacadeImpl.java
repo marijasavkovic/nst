@@ -15,8 +15,13 @@ import com.master.nst.service.DepartmentService;
 import com.master.nst.service.EmployeeService;
 import com.master.nst.service.LevelOfStudiesService;
 import com.master.nst.service.TeachingTypeService;
+import com.master.nst.sheard.errors.Error;
+import com.master.nst.sheard.exception.ValidationException;
 import com.master.nst.sheard.response.Response;
+import com.master.nst.sheard.response.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +31,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "application/")
@@ -85,7 +93,7 @@ public class FacadeImpl implements Facade {
 
     @Override
     @PostMapping("employee")
-    public Response<Employee> addEmployee(@RequestBody EmployeeCmd employeeCmd) {
+    public Response<Employee> addEmployee(@Valid @RequestBody EmployeeCmd employeeCmd) {
         return employeeService.add(employeeCmd);
     }
 
@@ -118,4 +126,24 @@ public class FacadeImpl implements Facade {
     public Response<Course> editCourse(@PathVariable Long courseId, @RequestBody CourseCmd courseCmd) {
         return courseService.edit(courseId, courseCmd);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Response<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+
+        List<Error> errors = ex
+            .getBindingResult()
+            .getFieldErrors()
+            .stream()
+            .map(fe -> new Error(fe.getDefaultMessage()))
+            .collect(Collectors.toList());
+
+        return new Response<>(com.master.nst.sheard.response.ResponseStatus.BAD_REQUEST, errors);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public Response<?> handleValidationException (ValidationException ex) {
+
+        return new Response<>(ResponseStatus.INTERNAL_SERVER_ERROR, ex.getErrors());
+    }
+
 }
