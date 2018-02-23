@@ -17,4 +17,7 @@ public class ErrorMessages {
     public static final String LEVEL_OF_STUDIES_NULL = "Level of studies can not be null";
     public static final String DEPARTMENT_NULL = "Department can not be null";
     public static final String LECTURER_LIST_EMPTY = "List of Lecturers can not be empty";
+    public static final String THEMATIC_UNIT_LIST_EMPTY = "List of Thematic Units can not be empty";
+    public static final String TEACHING_TYPE_NULL = "Teaching type can not be null";
+    public static final String COURSE_NULL = "Course can not be null";
 }

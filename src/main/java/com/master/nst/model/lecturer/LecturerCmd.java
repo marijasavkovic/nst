@@ -1,11 +1,21 @@
 package com.master.nst.model.lecturer;
 
+import com.master.nst.sheard.errors.ErrorMessages;
+import com.master.nst.sheard.validation.ValidationGroups;
+
 import java.io.Serializable;
+
+import javax.validation.constraints.NotNull;
 
 public class LecturerCmd implements Serializable{
 
+    @NotNull(message = ErrorMessages.ID_NULL, groups = ValidationGroups.Edit.class)
     private Long id;
+
+    @NotNull(message = ErrorMessages.TEACHING_TYPE_NULL)
     private Long teachingTypeId;
+
+    @NotNull(message = ErrorMessages.COURSE_NULL)
     private Long employeeId;
 
     public Long getId() {

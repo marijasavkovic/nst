@@ -65,15 +65,11 @@ public class CourseServiceImpl implements CourseService{
     private Course editCourse (Long courseId, CourseCmd courseCmd){
 //        employeeValidatorEdit.validate(courseId, courseCmd);
 
-//        lecturerRepository.deleteByCourse_Id(courseId);
-
         CourseEntity courseEntity = courseRepository.findById(courseId)
             .orElseThrow(RuntimeException::new);
 
         courseMapper.updateEntityFromModel(courseCmd, courseEntity);
 
-
         return courseMapper.mapToModel(courseRepository.save(courseEntity));
-
     }
 }

@@ -3,6 +3,7 @@ package com.master.nst.model.course;
 import com.master.nst.model.department.Department;
 import com.master.nst.model.lecturer.Lecturer;
 import com.master.nst.model.levelofstudies.LevelOfStudies;
+import com.master.nst.model.thematicunit.ThematicUnit;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Course implements Serializable {
     private LevelOfStudies levelOfStudies;
     private Department department;
     private List<Lecturer> lecturerList;
+    private List<ThematicUnit> thematicUnitsList;
 
     public Long getId() {
         return id;
@@ -80,6 +82,14 @@ public class Course implements Serializable {
 
     public void setLecturerList(final List<Lecturer> lecturerList) {
         this.lecturerList = lecturerList;
+    }
+
+    public List<ThematicUnit> getThematicUnitsList() {
+        return thematicUnitsList;
+    }
+
+    public void setThematicUnitsList(final List<ThematicUnit> thematicUnitsList) {
+        this.thematicUnitsList = thematicUnitsList;
     }
 
     @Override

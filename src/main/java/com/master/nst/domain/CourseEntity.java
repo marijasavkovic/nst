@@ -45,6 +45,9 @@ public class CourseEntity extends BaseEntity<Long> {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "course", orphanRemoval = true)
     private List<LecturerEntity> lecturerList;
 
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "course", orphanRemoval = true)
+    private List<ThematicUnitEntity> thematicUnitsList;
+
     @Override
     public Long getId() {
         return id;
@@ -109,6 +112,14 @@ public class CourseEntity extends BaseEntity<Long> {
 
     public void setLecturerList(final List<LecturerEntity> lecturerList) {
         this.lecturerList = lecturerList;
+    }
+
+    public List<ThematicUnitEntity> getThematicUnitsList() {
+        return thematicUnitsList;
+    }
+
+    public void setThematicUnitsList(final List<ThematicUnitEntity> thematicUnitsList) {
+        this.thematicUnitsList = thematicUnitsList;
     }
 
     @Override

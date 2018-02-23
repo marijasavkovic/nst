@@ -1,6 +1,7 @@
 package com.master.nst.model.course;
 
 import com.master.nst.model.lecturer.LecturerCmd;
+import com.master.nst.model.thematicunit.ThematicUnitCmd;
 import com.master.nst.sheard.errors.ErrorMessages;
 import com.master.nst.sheard.validation.ValidationGroups;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -8,6 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class CourseCmd implements Serializable{
@@ -34,7 +36,12 @@ public class CourseCmd implements Serializable{
     private Long departmentId;
 
     @NotEmpty(message = ErrorMessages.LECTURER_LIST_EMPTY)
+    @Valid
     private List<LecturerCmd> lecturerList;
+
+    @NotEmpty(message = ErrorMessages.THEMATIC_UNIT_LIST_EMPTY)
+    @Valid
+    private List<ThematicUnitCmd> thematicUnitsList;
 
     public Long getId() {
         return id;
@@ -98,6 +105,14 @@ public class CourseCmd implements Serializable{
 
     public void setLecturerList(final List<LecturerCmd> lecturerList) {
         this.lecturerList = lecturerList;
+    }
+
+    public List<ThematicUnitCmd> getThematicUnitsList() {
+        return thematicUnitsList;
+    }
+
+    public void setThematicUnitsList(final List<ThematicUnitCmd> thematicUnitsList) {
+        this.thematicUnitsList = thematicUnitsList;
     }
 
     @Override

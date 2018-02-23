@@ -6,10 +6,12 @@ import com.master.nst.domain.EmployeeEntity;
 import com.master.nst.domain.LecturerEntity;
 import com.master.nst.domain.LevelOfStudiesEntity;
 import com.master.nst.domain.TeachingTypeEntity;
+import com.master.nst.domain.ThematicUnitEntity;
 import com.master.nst.mapper.CourseMapper;
 import com.master.nst.model.course.CourseCmd;
 import com.master.nst.model.course.CourseRecord;
 import com.master.nst.model.lecturer.LecturerCmd;
+import com.master.nst.model.thematicunit.ThematicUnitCmd;
 import com.master.nst.repository.CourseRepository;
 import com.master.nst.repository.DepartmentRepository;
 import com.master.nst.repository.EmployeeRepository;
@@ -87,6 +89,7 @@ public abstract class CourseMapperDecorator implements CourseMapper {
         }
 
         mapLecturerList(model.getLecturerList(), courseEntity);
+        mapThematicUnits(model.getThematicUnitsList(), courseEntity);
         return courseEntity;
     }
 
@@ -113,7 +116,7 @@ public abstract class CourseMapperDecorator implements CourseMapper {
 
     @Override
     public void updateEntityFromModel(final CourseCmd model, final CourseEntity entity) {
-        if ( model == null ) {
+        if (model == null) {
             return;
         }
         courseMapper.updateEntityFromModel(model, entity);
@@ -133,11 +136,14 @@ public abstract class CourseMapperDecorator implements CourseMapper {
         }
 
         mapLecturerList(model.getLecturerList(), entity);
+        mapThematicUnits(model.getThematicUnitsList(), entity);
 
     }
 
-    private void mapLecturerList (List<LecturerCmd> lecturers, CourseEntity entity){
-        entity.getLecturerList().clear();
+    private void mapLecturerList(List<LecturerCmd> lecturers, CourseEntity entity) {
+        if (entity.getLecturerList() != null) {
+            entity.getLecturerList().clear();
+        }
         if (lecturers != null && !lecturers.isEmpty()) {
             for (LecturerCmd lecturerCmd : lecturers) {
                 LecturerEntity lecturerEntity = lecturerCmdToLecturerEntity(lecturerCmd);
@@ -145,5 +151,50 @@ public abstract class CourseMapperDecorator implements CourseMapper {
                 entity.getLecturerList().add(lecturerEntity);
             }
         }
+    }
+
+    private void mapThematicUnits(List<ThematicUnitCmd> list, CourseEntity entity) {
+        if (entity.getThematicUnitsList() != null) {
+            entity.getThematicUnitsList().clear();
+        }
+        if (list != null && !list.isEmpty()) {
+            for (ThematicUnitCmd thematicUnitCmd : list) {
+                entity.getThematicUnitsList().add(cmdToEntityThematicUnit(list, thematicUnitCmd, entity));
+            }
+        }
+    }
+
+    private ThematicUnitEntity cmdToEntityThematicUnit(final List<ThematicUnitCmd> list,
+         final ThematicUnitCmd thematicUnitCmd, CourseEntity entity){
+
+        ThematicUnitEntity thematicUnitEntity = thematicUnitCmdToThematicUnitEntity(thematicUnitCmd);
+        thematicUnitEntity.setCourse(entity);
+        if (thematicUnitCmd.getParentThematicUnitSerialNumber() != null &&
+            !thematicUnitCmd.getParentThematicUnitSerialNumber().isEmpty()){
+
+            ThematicUnitEntity parent = findParentTemathicUnit(list, entity, thematicUnitCmd.getParentThematicUnitSerialNumber());
+            thematicUnitEntity.setParentThematicUnit(parent);
+        }
+        return thematicUnitEntity;
+    }
+
+    private ThematicUnitEntity findParentTemathicUnit(final List<ThematicUnitCmd> list,
+        final CourseEntity entity, final String parentThematicUnitSerialNumber) {
+
+        for (ThematicUnitEntity thematicUnitEntity : entity.getThematicUnitsList()){
+            if(thematicUnitEntity.getSerialNumber().equalsIgnoreCase(parentThematicUnitSerialNumber)){
+                return thematicUnitEntity;
+            }
+        }
+
+        for (ThematicUnitCmd thematicUnitCmd : list){
+            if(thematicUnitCmd.getParentThematicUnitSerialNumber().equalsIgnoreCase(parentThematicUnitSerialNumber)){
+                ThematicUnitEntity parent =  cmdToEntityThematicUnit(list, thematicUnitCmd, entity);
+                entity.getThematicUnitsList().add(parent);
+                return parent;
+            }
+        }
+        return null;
+
     }
 }
