@@ -9,3 +9,5 @@ CREATE TABLE lecturer (
   CONSTRAINT fk_teaching_type FOREIGN KEY (teaching_type_id) REFERENCES teaching_type(id),
   CONSTRAINT fk_employee FOREIGN KEY (employee_id) REFERENCES employee(id)
 );
+
+

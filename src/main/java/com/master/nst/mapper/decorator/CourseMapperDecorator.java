@@ -46,7 +46,7 @@ public abstract class CourseMapperDecorator implements CourseMapper {
             return null;
         }
 
-        List<CourseRecord> list = new ArrayList<CourseRecord>(courseEntities.size());
+        List<CourseRecord> list = new ArrayList<>(courseEntities.size());
         for (CourseEntity courseEntity : courseEntities) {
             list.add(mapToRecord(courseEntity));
         }
@@ -137,14 +137,13 @@ public abstract class CourseMapperDecorator implements CourseMapper {
     }
 
     private void mapLecturerList (List<LecturerCmd> lecturers, CourseEntity entity){
+        entity.getLecturerList().clear();
         if (lecturers != null && !lecturers.isEmpty()) {
-            List<LecturerEntity> list = new ArrayList<LecturerEntity>(lecturers.size());
             for (LecturerCmd lecturerCmd : lecturers) {
                 LecturerEntity lecturerEntity = lecturerCmdToLecturerEntity(lecturerCmd);
                 lecturerEntity.setCourse(entity);
-                list.add(lecturerEntity);
+                entity.getLecturerList().add(lecturerEntity);
             }
-            entity.setLecturerList(list);
         }
     }
 }

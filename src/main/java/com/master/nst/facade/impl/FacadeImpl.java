@@ -99,7 +99,7 @@ public class FacadeImpl implements Facade {
 
     @Override
     @PutMapping("employee/{employeeId}")
-    public Response<Employee> editEmployee(@PathVariable Long employeeId, @RequestBody EmployeeCmd employeeCmd) {
+    public Response<Employee> editEmployee(@PathVariable Long employeeId,@Valid @RequestBody EmployeeCmd employeeCmd) {
         return employeeService.edit(employeeId, employeeCmd);
     }
 
@@ -117,13 +117,13 @@ public class FacadeImpl implements Facade {
 
     @Override
     @PostMapping("course")
-    public Response<Course> addCourse(@RequestBody CourseCmd courseCmd) {
+    public Response<Course> addCourse(@Valid @RequestBody CourseCmd courseCmd) {
         return courseService.add(courseCmd);
     }
 
     @Override
     @PutMapping("course/{courseId}")
-    public Response<Course> editCourse(@PathVariable Long courseId, @RequestBody CourseCmd courseCmd) {
+    public Response<Course> editCourse(@PathVariable Long courseId, @Valid @RequestBody CourseCmd courseCmd) {
         return courseService.edit(courseId, courseCmd);
     }
 

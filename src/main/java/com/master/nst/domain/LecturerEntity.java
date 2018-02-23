@@ -2,9 +2,9 @@ package com.master.nst.domain;
 
 import com.master.nst.sheard.domain.BaseEntity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,19 +15,19 @@ import javax.persistence.Table;
 public class LecturerEntity extends BaseEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "course_id")
     private CourseEntity course;
 
-    @ManyToOne
-    @JoinColumn(name = "teaching_type_id", referencedColumnName = "id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "teaching_type_id")
     private TeachingTypeEntity teachingType;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id", referencedColumnName = "id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "employee_id")
     private EmployeeEntity employee;
 
     @Override

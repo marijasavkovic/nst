@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,7 +19,7 @@ import javax.persistence.Table;
 public class CourseEntity extends BaseEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -43,8 +42,7 @@ public class CourseEntity extends BaseEntity<Long> {
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
-    @JoinColumn(name = "course_id")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "course", orphanRemoval = true)
     private List<LecturerEntity> lecturerList;
 
     @Override
