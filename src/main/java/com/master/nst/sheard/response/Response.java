@@ -53,6 +53,11 @@ public class Response<T> implements Serializable {
         this.errors = Collections.singletonList(error);
     }
 
+    public Response(ResponseStatus status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+
     public T getData() {
         return data;
     }

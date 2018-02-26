@@ -25,17 +25,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeMapper employeeMapper;
     private final EmployeeValidator.Add employeeValidatorAdd;
     private final EmployeeValidator.Edit employeeValidatorEdit;
+    private final EmployeeValidator.Delete employeeValidatorDelete;
 
     @Autowired
     public EmployeeServiceImpl(final EmployeeRepository employeeRepository,
                                final EmployeeMapper employeeMapper,
                                final EmployeeValidator.Add employeeValidatorAdd,
-                               final EmployeeValidator.Edit employeeValidatorEdit
+                               final EmployeeValidator.Edit employeeValidatorEdit,
+                               final EmployeeValidator.Delete employeeValidatorDelete
     ) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
         this.employeeValidatorAdd = employeeValidatorAdd;
         this.employeeValidatorEdit = employeeValidatorEdit;
+        this.employeeValidatorDelete = employeeValidatorDelete;
     }
 
     @Override
@@ -57,6 +60,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Response<Employee> edit(final Long employeeId, final EmployeeCmd employeeCmd) {
         return new Response<>(editEmployee(employeeId, employeeCmd));
+    }
+
+    @Override
+    public Response<?> delete(final Long employeeId) {
+        employeeValidatorDelete.validate(employeeId);
+        employeeRepository.delete(employeeId);
+        return new Response<>(ResponseStatus.OK, "Employee is deleted successfully!");
     }
 
     private Employee addEmployee (EmployeeCmd employeeCmd) {

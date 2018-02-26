@@ -36,4 +36,8 @@ public interface Facade {
     Response<Course> addCourse(CourseCmd courseCmd);
 
     Response<Course> editCourse(Long courseId, CourseCmd courseCmd);
+
+    Response<?> deleteEmployee(Long employeeId);
+
+    Response<?> deleteCourse(Long courseId);
 }

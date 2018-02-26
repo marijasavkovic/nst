@@ -17,4 +17,6 @@ public interface CourseService {
 
     Response<Course> edit(Long courseId, CourseCmd courseCmd);
 
+    Response<?> delete(Long courseId);
+
 }

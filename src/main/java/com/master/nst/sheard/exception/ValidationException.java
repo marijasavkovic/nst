@@ -18,6 +18,9 @@ public class ValidationException extends RuntimeException {
         this.errors = errors;
     }
 
+    public ValidationException() {
+    }
+
     public ValidationException(List<Error> errors) {
         this(null, errors);
     }

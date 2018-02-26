@@ -21,6 +21,7 @@ import com.master.nst.sheard.response.Response;
 import com.master.nst.sheard.response.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -104,6 +105,18 @@ public class FacadeImpl implements Facade {
     }
 
     @Override
+    @DeleteMapping(path = "employee/{employeeId}")
+    public Response<?> deleteEmployee(@PathVariable Long employeeId) {
+        return employeeService.delete(employeeId);
+    }
+
+    @Override
+    @DeleteMapping(path = "course/{courseId}")
+    public Response<?> deleteCourse(@PathVariable Long courseId) {
+        return courseService.delete(courseId);
+    }
+
+    @Override
     @GetMapping("course/findAllCourses")
     public Response<List<CourseRecord>> findAllCourses() {
         return courseService.findAll();
@@ -142,7 +155,6 @@ public class FacadeImpl implements Facade {
 
     @ExceptionHandler(ValidationException.class)
     public Response<?> handleValidationException (ValidationException ex) {
-
         return new Response<>(ResponseStatus.INTERNAL_SERVER_ERROR, ex.getErrors());
     }
 

@@ -16,4 +16,6 @@ public interface EmployeeService {
     Response<Employee> add(EmployeeCmd employeeCmd);
 
     Response<Employee> edit(Long employeeId, EmployeeCmd employeeCmd);
+
+    Response<?> delete(Long employeeId);
 }

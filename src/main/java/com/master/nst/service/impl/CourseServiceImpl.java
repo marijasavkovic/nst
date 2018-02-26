@@ -6,10 +6,10 @@ import com.master.nst.model.course.Course;
 import com.master.nst.model.course.CourseCmd;
 import com.master.nst.model.course.CourseRecord;
 import com.master.nst.repository.CourseRepository;
-import com.master.nst.repository.LecturerRepository;
 import com.master.nst.service.CourseService;
 import com.master.nst.sheard.response.Response;
 import com.master.nst.sheard.response.ResponseStatus;
+import com.master.nst.validator.course.CourseValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +22,15 @@ import java.util.Optional;
 public class CourseServiceImpl implements CourseService{
 
     private final CourseRepository courseRepository;
-    private final LecturerRepository lecturerRepository;
     private final CourseMapper courseMapper;
+    private final CourseValidator.Add courseValidatorAdd;
 
     @Autowired
     public CourseServiceImpl(final CourseRepository courseRepository,
-                            final CourseMapper courseMapper,
-                            final LecturerRepository lecturerRepository) {
+                            final CourseMapper courseMapper, final CourseValidator.Add courseValidatorAdd) {
         this.courseRepository = courseRepository;
         this.courseMapper = courseMapper;
-        this.lecturerRepository = lecturerRepository;
+        this.courseValidatorAdd = courseValidatorAdd;
     }
 
     @Override
@@ -55,8 +54,15 @@ public class CourseServiceImpl implements CourseService{
         return new Response<>(editCourse(courseId, courseCmd));
     }
 
+    @Override
+    public Response<?> delete(final Long courseId) {
+//        employeeValidatorDelete.validate(employeeId);
+        courseRepository.delete(courseId);
+        return new Response<>(ResponseStatus.OK, "Course is deleted successfully!");
+    }
+
     private Course addCourse (CourseCmd courseCmd) {
-//        employeeValidatorAdd.validate(courseCmd);
+        courseValidatorAdd.validate(courseCmd);
 
         CourseEntity courseEntity = courseMapper.mapToEntity(courseCmd);
         return courseMapper.mapToModel(courseRepository.save(courseEntity));
