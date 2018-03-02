@@ -10,5 +10,8 @@
         <sqlFile path="scripts/department_data.sql" relativeToChangelogFile="true"/>
         <sqlFile path="scripts/teaching_type_data.sql" relativeToChangelogFile="true"/>
         <sqlFile path="scripts/employee_data.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="scripts/course_data.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="scripts/lecturer_data.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="scripts/thematic_unit_data.sql" relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>

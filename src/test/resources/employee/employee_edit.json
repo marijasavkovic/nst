@@ -1,0 +1,14 @@
+{
+  "data": {
+    "id": 1,
+    "name": "Update name",
+    "surname": "Markovic",
+    "personalIdentificationNumber": "1234567891234",
+    "address": "Jove Ilica",
+    "title": "DR",
+    "vocation": "ASISTENT"
+  },
+  "status": "OK",
+  "message": null,
+  "errors": null
+}

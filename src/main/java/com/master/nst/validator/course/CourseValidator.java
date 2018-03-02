@@ -32,7 +32,7 @@ public class CourseValidator{
             Error error = checkNameUnique(courseCmd.getName());
 
             if (error!=null) {
-                errors.add(new Error("Course with this name already exists"));
+                errors.add(error);
             }
 
             if(!errors.isEmpty()){
@@ -57,6 +57,19 @@ public class CourseValidator{
 
         public void validate(Long courseId, CourseCmd courseCmd) {
 
+            List<Error> errors = new ArrayList<>();
+
+            CourseEntity course = courseRepository
+                .findById(courseId)
+                .orElseThrow(() -> new ValidationException(new Error("Course with that id does not exists")));
+            ;
+
+            final Optional<CourseEntity> courseEntity = courseRepository.findByName(
+                courseCmd.getName());
+
+            if (courseEntity.isPresent()) {
+                errors.add(new Error("Course with this name already exists"));
+            }
         }
     }
 

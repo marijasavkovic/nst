@@ -7,7 +7,6 @@ import com.master.nst.sheard.validation.ValidationGroups;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
@@ -24,7 +23,7 @@ public class EmployeeCmd implements Serializable{
     @NotEmpty(message = ErrorMessages.SURNAME_EMPTY)
     private String surname;
 
-    @Pattern(regexp = "^(\\d{13})?$", message = ErrorMessages.PIN_13_NUM)
+    @Pattern(regexp = "^(\\d{13})?$", message = ErrorMessages.PIN_13_NUM, groups = ValidationGroups.Add.class)
     private String personalIdentificationNumber;
 
     @NotNull(message = ErrorMessages.DATE_OF_BIRTH_NULL)

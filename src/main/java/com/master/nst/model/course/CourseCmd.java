@@ -17,7 +17,7 @@ public class CourseCmd implements Serializable{
     @NotNull(message = ErrorMessages.ID_NULL, groups = ValidationGroups.Edit.class)
     private Long id;
 
-    @NotEmpty(message = ErrorMessages.NAME_EMPTY)
+    @NotEmpty(message = ErrorMessages.NAME_EMPTY,  groups = ValidationGroups.Add.class)
     private String name;
 
     @NotNull(message = ErrorMessages.ESPB_NULL)

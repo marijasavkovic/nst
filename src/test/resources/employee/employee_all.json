@@ -1,0 +1,23 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Marko",
+      "surname": "Markovic",
+      "personalIdentificationNumber": "1234567891234",
+      "title": "DR",
+      "vocation": "ASISTENT"
+    },
+    {
+      "id": 2,
+      "name": "Nikola",
+      "surname": "Nikolic",
+      "personalIdentificationNumber": "7854123698521",
+      "title": "MR",
+      "vocation": "ASISTENT"
+    }
+  ],
+  "status": "OK",
+  "message": null,
+  "errors": null
+}

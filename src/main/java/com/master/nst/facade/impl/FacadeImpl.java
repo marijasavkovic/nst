@@ -19,7 +19,9 @@ import com.master.nst.sheard.errors.Error;
 import com.master.nst.sheard.exception.ValidationException;
 import com.master.nst.sheard.response.Response;
 import com.master.nst.sheard.response.ResponseStatus;
+import com.master.nst.sheard.validation.ValidationGroups;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,8 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "application/")
@@ -52,8 +52,7 @@ public class FacadeImpl implements Facade {
         final DepartmentService departmentService,
         final TeachingTypeService teachingTypeService,
         final EmployeeService employeeService,
-        final CourseService courseService
-        )
+        final CourseService courseService)
     {
         this.levelOfStudiesService = levelOfStudiesService;
         this.departmentService = departmentService;
@@ -94,13 +93,13 @@ public class FacadeImpl implements Facade {
 
     @Override
     @PostMapping("employee")
-    public Response<Employee> addEmployee(@Valid @RequestBody EmployeeCmd employeeCmd) {
+    public Response<Employee> addEmployee(@Validated(ValidationGroups.Add.class) @RequestBody EmployeeCmd employeeCmd) {
         return employeeService.add(employeeCmd);
     }
 
     @Override
     @PutMapping("employee/{employeeId}")
-    public Response<Employee> editEmployee(@PathVariable Long employeeId,@Valid @RequestBody EmployeeCmd employeeCmd) {
+    public Response<Employee> editEmployee(@PathVariable Long employeeId, @Validated(ValidationGroups.Edit.class) @RequestBody EmployeeCmd employeeCmd) {
         return employeeService.edit(employeeId, employeeCmd);
     }
 
@@ -130,13 +129,16 @@ public class FacadeImpl implements Facade {
 
     @Override
     @PostMapping("course")
-    public Response<Course> addCourse(@Valid @RequestBody CourseCmd courseCmd) {
+    public Response<Course> addCourse(@Validated(ValidationGroups.Add.class) @RequestBody CourseCmd courseCmd) {
         return courseService.add(courseCmd);
     }
 
     @Override
     @PutMapping("course/{courseId}")
-    public Response<Course> editCourse(@PathVariable Long courseId, @Valid @RequestBody CourseCmd courseCmd) {
+    public Response<Course> editCourse(
+        @PathVariable Long courseId,
+        @Validated(ValidationGroups.Edit.class) @RequestBody CourseCmd courseCmd)
+    {
         return courseService.edit(courseId, courseCmd);
     }
 
@@ -154,7 +156,7 @@ public class FacadeImpl implements Facade {
     }
 
     @ExceptionHandler(ValidationException.class)
-    public Response<?> handleValidationException (ValidationException ex) {
+    public Response<?> handleValidationException(ValidationException ex) {
         return new Response<>(ResponseStatus.INTERNAL_SERVER_ERROR, ex.getErrors());
     }
 

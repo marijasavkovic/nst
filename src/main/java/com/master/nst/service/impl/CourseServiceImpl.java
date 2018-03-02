@@ -56,7 +56,6 @@ public class CourseServiceImpl implements CourseService{
 
     @Override
     public Response<?> delete(final Long courseId) {
-//        employeeValidatorDelete.validate(employeeId);
         courseRepository.delete(courseId);
         return new Response<>(ResponseStatus.OK, "Course is deleted successfully!");
     }
@@ -69,7 +68,6 @@ public class CourseServiceImpl implements CourseService{
     }
 
     private Course editCourse (Long courseId, CourseCmd courseCmd){
-//        employeeValidatorEdit.validate(courseId, courseCmd);
 
         CourseEntity courseEntity = courseRepository.findById(courseId)
             .orElseThrow(RuntimeException::new);

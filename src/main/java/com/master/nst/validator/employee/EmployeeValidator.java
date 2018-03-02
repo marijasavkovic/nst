@@ -22,10 +22,11 @@ public class EmployeeValidator {
     private final CourseRepository courseRepository;
 
     @Autowired
-    public EmployeeValidator(final EmployeeRepository employeeRepository,
-                            final CourseRepository courseRepository) {
+    public EmployeeValidator(
+        final EmployeeRepository employeeRepository, final CourseRepository courseRepository)
+    {
         this.employeeRepository = employeeRepository;
-        this.courseRepository= courseRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Component
@@ -44,9 +45,11 @@ public class EmployeeValidator {
             }
 
             Error error = DateValidator.dateInPast(employeeCmd.getDateOfBirth(), "Date of birth");
-            if(error!=null) errors.add(error);
+            if (error != null) {
+                errors.add(error);
+            }
 
-            if(!errors.isEmpty()){
+            if (!errors.isEmpty()) {
                 throw new ValidationException(errors);
             }
 
@@ -58,14 +61,33 @@ public class EmployeeValidator {
 
         public void validate(Long employeeId, EmployeeCmd employeeCmd) {
 
-            EmployeeEntity employeeEntity = employeeRepository.findById(employeeId).orElseThrow(
-                ()-> new ValidationException(new Error("Employee with that id does not exists")));;
+            String personalIndentificationNumber = employeeCmd.getPersonalIdentificationNumber();
+            final Optional<EmployeeEntity> employee = employeeRepository.findByPersonalIdentificationNumber(
+                personalIndentificationNumber);
+
+            List<Error> errors = new ArrayList<>();
+
+            if (employee.isPresent()) {
+                if (!employee.get().getId().equals(employeeId)) {
+                    errors.add(new Error("Employee with this personal indentification number already exists"));
+                }
+            }
+
+            EmployeeEntity employeeEntity = employeeRepository
+                .findById(employeeId)
+                .orElseThrow(() -> new ValidationException(new Error("Employee with that id does not exists")));
+            ;
 
             Error error = DateValidator.dateInPast(employeeCmd.getDateOfBirth(), "Date of birth");
 
-            if(error!=null){
-                throw new ValidationException(error);
+            if (error != null) {
+                errors.add(error);
             }
+
+            if (!errors.isEmpty()) {
+                throw new ValidationException(errors);
+            }
+
         }
     }
 
@@ -74,17 +96,18 @@ public class EmployeeValidator {
 
         public void validate(Long employeeId) {
 
-            EmployeeEntity employeeEntity = employeeRepository.findById(employeeId).orElseThrow(
-                ()-> new ValidationException(new Error("Employee with that id does not exists")));
+            EmployeeEntity employeeEntity = employeeRepository
+                .findById(employeeId)
+                .orElseThrow(() -> new ValidationException(new Error("Employee with that id does not exists")));
 
             List<CourseEntity> courseEntities = courseRepository.findByEmployeeId(employeeId);
 
-            if(!courseEntities.isEmpty()){
-                throw new ValidationException(new Error("Employee can not be deleted, because he is a lecturer on the subject!"));
+            if (!courseEntities.isEmpty()) {
+                throw new ValidationException(
+                    new Error("Employee can not be deleted, because he is a lecturer on the subject!"));
             }
         }
 
     }
-
 
 }

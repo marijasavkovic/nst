@@ -1,0 +1,13 @@
+{
+  "data": {
+    "name": "Pera",
+    "surname": "Peric",
+    "personalIdentificationNumber": "9874563214568",
+    "address": "Adresa",
+    "title": "DR",
+    "vocation": "REDOVNI_PROFESOR"
+  },
+  "status": "OK",
+  "message": null,
+  "errors": null
+}
