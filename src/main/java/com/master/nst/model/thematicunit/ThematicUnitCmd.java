@@ -1,11 +1,16 @@
 package com.master.nst.model.thematicunit;
 
+import com.master.nst.sheard.errors.ErrorMessages;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.io.Serializable;
 
 public class ThematicUnitCmd implements Serializable {
 
     private Long id;
+    @NotEmpty(message = ErrorMessages.TU_NAME_EMPTY)
     private String name;
+    @NotEmpty(message = ErrorMessages.TU_SN_EMPTY)
     private String serialNumber;
     private String description;
     private String parentThematicUnitSerialNumber;

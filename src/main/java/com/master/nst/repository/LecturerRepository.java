@@ -9,7 +9,4 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
 public interface LecturerRepository extends BaseRepository<LecturerEntity, Long> {
-
-    void deleteByCourse_Id(Long courseId);
-
 }

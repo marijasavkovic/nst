@@ -1,15 +1,13 @@
 package com.master.nst.model.lecturer;
 
 import com.master.nst.sheard.errors.ErrorMessages;
-import com.master.nst.sheard.validation.ValidationGroups;
 
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-public class LecturerCmd implements Serializable{
+public class LecturerCmd implements Serializable {
 
-    @NotNull(message = ErrorMessages.ID_NULL, groups = ValidationGroups.Edit.class)
     private Long id;
 
     @NotNull(message = ErrorMessages.TEACHING_TYPE_NULL)
@@ -50,15 +48,18 @@ public class LecturerCmd implements Serializable{
             .append("employee id")
             .append(employeeId)
             .append("teaching type id")
-            .append(teachingTypeId).toString();
+            .append(teachingTypeId)
+            .toString();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if(obj instanceof LecturerCmd){
+        if (obj instanceof LecturerCmd) {
             LecturerCmd lecturerCmd = (LecturerCmd) obj;
-            if(lecturerCmd.getTeachingTypeId().equals(teachingTypeId) && lecturerCmd.getEmployeeId().equals(employeeId)){
-                return true;
+            if (lecturerCmd.getTeachingTypeId() != null && lecturerCmd.getEmployeeId() != null) {
+                return lecturerCmd.getTeachingTypeId().equals(teachingTypeId) && lecturerCmd
+                    .getEmployeeId()
+                    .equals(employeeId);
             }
         }
         return false;
