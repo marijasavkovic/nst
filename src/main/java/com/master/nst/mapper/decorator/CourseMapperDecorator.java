@@ -8,11 +8,13 @@ import com.master.nst.domain.LevelOfStudiesEntity;
 import com.master.nst.domain.TeachingTypeEntity;
 import com.master.nst.domain.ThematicUnitEntity;
 import com.master.nst.mapper.CourseMapper;
+import com.master.nst.model.course.Course;
 import com.master.nst.model.course.CourseCmd;
 import com.master.nst.model.course.CourseRecord;
+import com.master.nst.model.lecturer.Lecturer;
 import com.master.nst.model.lecturer.LecturerCmd;
+import com.master.nst.model.thematicunit.ThematicUnit;
 import com.master.nst.model.thematicunit.ThematicUnitCmd;
-import com.master.nst.repository.CourseRepository;
 import com.master.nst.repository.DepartmentRepository;
 import com.master.nst.repository.EmployeeRepository;
 import com.master.nst.repository.LevelOfStudiesRepository;
@@ -32,9 +34,6 @@ public abstract class CourseMapperDecorator implements CourseMapper {
 
     @Autowired
     private LevelOfStudiesRepository levelOfStudiesRepository;
-
-    @Autowired
-    private CourseRepository courseRepository;
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -135,7 +134,7 @@ public abstract class CourseMapperDecorator implements CourseMapper {
             entity.setLevelOfStudies(levelOfStudiesEntity);
         }
 
-        mapLecturerList(model.getLecturerList(), entity);
+        updateLecturerList(model.getLecturerList(), entity);
         mapThematicUnits(model.getThematicUnitsList(), entity);
 
     }
@@ -148,8 +147,21 @@ public abstract class CourseMapperDecorator implements CourseMapper {
             for (LecturerCmd lecturerCmd : lecturers) {
                 LecturerEntity lecturerEntity = lecturerCmdToLecturerEntity(lecturerCmd);
                 lecturerEntity.setCourse(entity);
-                entity.getLecturerList().add(lecturerEntity);
+                entity.addLecturer(lecturerEntity);
             }
+        }
+    }
+
+    private void updateLecturerList(List<LecturerCmd> lecturers, CourseEntity entity) {
+        List<LecturerEntity> lecturerEntities = new ArrayList<>();
+        for (LecturerCmd lecturerCmd : lecturers) {
+            lecturerEntities.add(lecturerCmdToLecturerEntity(lecturerCmd));
+        }
+        entity.getLecturerList().removeIf((LecturerEntity lecturerEntity) -> {
+            return !lecturerEntities.contains(lecturerEntity);
+        });
+        for (LecturerEntity lecturerEntity : lecturerEntities) {
+            entity.addLecturer(lecturerEntity);
         }
     }
 
@@ -159,42 +171,89 @@ public abstract class CourseMapperDecorator implements CourseMapper {
         }
         if (list != null && !list.isEmpty()) {
             for (ThematicUnitCmd thematicUnitCmd : list) {
-                entity.getThematicUnitsList().add(cmdToEntityThematicUnit(list, thematicUnitCmd, entity));
+                if(entity.getThematicUnitsList()!=null && !entity.getThematicUnitsList().stream()
+                    .map(ThematicUnitEntity::getSerialNumber).anyMatch(thematicUnitCmd.getSerialNumber()::equalsIgnoreCase)) {
+                    entity.getThematicUnitsList().add(cmdToEntityThematicUnit(list, thematicUnitCmd, entity));
+                }
             }
         }
     }
 
-    private ThematicUnitEntity cmdToEntityThematicUnit(final List<ThematicUnitCmd> list,
-         final ThematicUnitCmd thematicUnitCmd, CourseEntity entity){
+    private ThematicUnitEntity cmdToEntityThematicUnit(
+        final List<ThematicUnitCmd> list,
+        final ThematicUnitCmd thematicUnitCmd,
+        CourseEntity entity)
+    {
 
         ThematicUnitEntity thematicUnitEntity = thematicUnitCmdToThematicUnitEntity(thematicUnitCmd);
         thematicUnitEntity.setCourse(entity);
-        if (thematicUnitCmd.getParentThematicUnitSerialNumber() != null &&
-            !thematicUnitCmd.getParentThematicUnitSerialNumber().isEmpty()){
+        if (thematicUnitCmd.getParentThematicUnitSerialNumber() != null && !thematicUnitCmd
+            .getParentThematicUnitSerialNumber()
+            .isEmpty()) {
 
-            ThematicUnitEntity parent = findParentTemathicUnit(list, entity, thematicUnitCmd.getParentThematicUnitSerialNumber());
+            ThematicUnitEntity parent = findParentTemathicUnit(
+                list, entity, thematicUnitCmd.getParentThematicUnitSerialNumber());
             thematicUnitEntity.setParentThematicUnit(parent);
         }
         return thematicUnitEntity;
     }
 
-    private ThematicUnitEntity findParentTemathicUnit(final List<ThematicUnitCmd> list,
-        final CourseEntity entity, final String parentThematicUnitSerialNumber) {
+    private ThematicUnitEntity findParentTemathicUnit(
+        final List<ThematicUnitCmd> list,
+        final CourseEntity entity,
+        final String parentThematicUnitSerialNumber)
+    {
 
-        for (ThematicUnitEntity thematicUnitEntity : entity.getThematicUnitsList()){
-            if(thematicUnitEntity.getSerialNumber().equalsIgnoreCase(parentThematicUnitSerialNumber)){
+        for (ThematicUnitEntity thematicUnitEntity : entity.getThematicUnitsList()) {
+            if (thematicUnitEntity.getSerialNumber().equalsIgnoreCase(parentThematicUnitSerialNumber)) {
                 return thematicUnitEntity;
             }
         }
 
-        for (ThematicUnitCmd thematicUnitCmd : list){
-            if(thematicUnitCmd.getParentThematicUnitSerialNumber().equalsIgnoreCase(parentThematicUnitSerialNumber)){
-                ThematicUnitEntity parent =  cmdToEntityThematicUnit(list, thematicUnitCmd, entity);
+        for (ThematicUnitCmd thematicUnitCmd : list) {
+            if (thematicUnitCmd.getSerialNumber().equalsIgnoreCase(parentThematicUnitSerialNumber)) {
+                ThematicUnitEntity parent = cmdToEntityThematicUnit(list, thematicUnitCmd, entity);
                 entity.getThematicUnitsList().add(parent);
                 return parent;
             }
         }
         return null;
 
+    }
+
+    @Override
+    public CourseCmd courseToCourseCmd(final Course course) {
+        CourseCmd courseCmd = courseMapper.courseToCourseCmd(course);
+
+        if(course.getDepartment()!=null)courseCmd.setDepartmentId(course.getDepartment().getId());
+        if(course.getLevelOfStudies()!=null) courseCmd.setLevelOfStudiesId(course.getLevelOfStudies().getId());
+        courseCmd.setLecturerList(new ArrayList<>());
+        courseCmd.setThematicUnitsList(new ArrayList<>());
+        for (Lecturer lecturer : course.getLecturerList()){
+            courseCmd.getLecturerList().add(lecturerToLecturerCmd(lecturer));
+        }
+        for (ThematicUnit thematicUnit : course.getThematicUnitsList()){
+            System.out.println(thematicUnit.getParentThematicUnit());
+            courseCmd.getThematicUnitsList().add(thematicUnitToThematicUnitCmd(thematicUnit));
+        }
+        return courseCmd;
+    }
+
+    private LecturerCmd lecturerToLecturerCmd(final Lecturer lecturer) {
+        LecturerCmd lecturerCmd = new LecturerCmd();
+        lecturerCmd.setId(lecturer.getId());
+        if(lecturer.getEmployee()!=null)lecturerCmd.setEmployeeId(lecturer.getEmployee().getId());
+        if(lecturer.getTeachingType()!=null)lecturerCmd.setTeachingTypeId(lecturer.getTeachingType().getId());
+        return lecturerCmd;
+    }
+
+    private ThematicUnitCmd thematicUnitToThematicUnitCmd(final ThematicUnit thematicUnit) {
+        ThematicUnitCmd thematicUnitCmd = new ThematicUnitCmd();
+        thematicUnitCmd.setId(thematicUnit.getId());
+        thematicUnitCmd.setName(thematicUnit.getName());
+        thematicUnitCmd.setDescription(thematicUnit.getDescription());
+        thematicUnitCmd.setSerialNumber(thematicUnit.getSerialNumber());
+        thematicUnitCmd.setParentThematicUnitSerialNumber(thematicUnit.getParentThematicUnit()!=null ? thematicUnit.getParentThematicUnit().getSerialNumber():null);
+        return thematicUnitCmd;
     }
 }

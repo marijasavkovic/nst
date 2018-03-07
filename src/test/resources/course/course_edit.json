@@ -1,0 +1,74 @@
+{
+  "data": {
+    "name": "Update name",
+    "espb": 6,
+    "goal": "cilj",
+    "methodOfEvaluation": "nacin ocenjivanja",
+    "levelOfStudies": {
+      "id": 2,
+      "name": "Master i specijalisticke studije"
+    },
+    "department": {
+      "id": 2,
+      "name": "Katedra za softversko inzenjerstvo"
+    },
+    "lecturerList": [
+      {
+        "teachingType": {
+          "id": 1,
+          "name": "Predavanje"
+        },
+        "employee": {
+          "id": 1,
+          "name": "Marko",
+          "surname": "Markovic",
+          "personalIdentificationNumber": "1234567891234",
+          "dateOfBirth": "1980-02-02",
+          "dateOfEmployment": "2010-02-02",
+          "address": "Jove Ilica",
+          "title": "DR",
+          "vocation": "ASISTENT"
+        }
+      },
+      {
+        "teachingType": {
+          "id": 2,
+          "name": "Vezbe"
+        },
+        "employee": {
+          "id": 2,
+          "name": "Nikola",
+          "surname": "Nikolic",
+          "personalIdentificationNumber": "7854123698521",
+          "dateOfBirth": "1980-02-02",
+          "dateOfEmployment": "2010-02-02",
+          "address": "Jove Ilica",
+          "title": "MR",
+          "vocation": "ASISTENT"
+        }
+      }
+    ],
+    "thematicUnitsList": [
+      {
+        "name": "TJ1",
+        "serialNumber": "1.",
+        "description": "Opis",
+        "parentThematicUnit": null
+      },
+      {
+        "name": "TJ1.1",
+        "serialNumber": "1.1.",
+        "description": "Opis",
+        "parentThematicUnit": {
+          "name": "TJ1",
+          "serialNumber": "1.",
+          "description": "Opis",
+          "parentThematicUnit": null
+        }
+      }
+    ]
+  },
+  "status": "OK",
+  "message": null,
+  "errors": null
+}

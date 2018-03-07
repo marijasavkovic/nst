@@ -2,6 +2,7 @@ package com.master.nst.domain;
 
 import com.master.nst.sheard.domain.BaseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -43,7 +44,7 @@ public class CourseEntity extends BaseEntity<Long> {
     private DepartmentEntity department;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "course", orphanRemoval = true)
-    private List<LecturerEntity> lecturerList;
+    private List<LecturerEntity> lecturerList = new ArrayList<>();
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "course", orphanRemoval = true)
     private List<ThematicUnitEntity> thematicUnitsList;
@@ -122,6 +123,29 @@ public class CourseEntity extends BaseEntity<Long> {
         this.thematicUnitsList = thematicUnitsList;
     }
 
+    public void addLecturer(LecturerEntity lecturerEntity) {
+        addLecturer(lecturerEntity, true);
+    }
+
+    void addLecturer(LecturerEntity lecturerEntity, boolean set) {
+        if (lecturerEntity != null) {
+            if(getLecturerList().contains(lecturerEntity)) {
+                getLecturerList().set(getLecturerList().indexOf(lecturerEntity), lecturerEntity);
+            }
+            else {
+                getLecturerList().add(lecturerEntity);
+            }
+            if (set) {
+                lecturerEntity.setCourse(this, false);
+            }
+        }
+    }
+
+    public void removeLecturer(LecturerEntity lecturerEntity) {
+        getLecturerList().remove(lecturerEntity);
+        lecturerEntity.setCourse(null);
+    }
+
     @Override
     public String toString() {
         return new StringBuilder(this.getClass().getSimpleName())
@@ -133,4 +157,5 @@ public class CourseEntity extends BaseEntity<Long> {
             .append(department)
             .toString();
     }
+
 }

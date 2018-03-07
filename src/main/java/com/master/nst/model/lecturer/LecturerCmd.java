@@ -52,4 +52,15 @@ public class LecturerCmd implements Serializable{
             .append("teaching type id")
             .append(teachingTypeId).toString();
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if(obj instanceof LecturerCmd){
+            LecturerCmd lecturerCmd = (LecturerCmd) obj;
+            if(lecturerCmd.getTeachingTypeId().equals(teachingTypeId) && lecturerCmd.getEmployeeId().equals(employeeId)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

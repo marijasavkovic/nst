@@ -103,7 +103,6 @@ public class EmployeeTest {
             .perform(post(GENERAL_PATH)
                          .contentType(MediaType.APPLICATION_JSON_UTF8)
                          .content(objectMapper.writeValueAsString(employeeCmd)))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().json(employeeAdd));
@@ -130,7 +129,6 @@ public class EmployeeTest {
             .perform(MockMvcRequestBuilders.put(GENERAL_PATH + "/{employeeId}", employeeEntity.getId())
                          .contentType(MediaType.APPLICATION_JSON_UTF8)
                          .content(objectMapper.writeValueAsString(employee)))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().json(employeeEdit));

@@ -1,0 +1,46 @@
+{
+  "data": {
+    "name": "Novi predmet",
+    "espb": 6,
+    "goal": "Cilj predmeta",
+    "methodOfEvaluation": "Nacin ocenjivanja",
+    "levelOfStudies": {
+      "id": 1,
+      "name": "Osnovne akademske studije"
+    },
+    "department": {
+      "id": 1,
+      "name": "Katedra za informacione sisteme"
+    },
+    "lecturerList": [
+      {
+        "teachingType": {
+          "id": 1,
+          "name": "Predavanje"
+        },
+        "employee": {
+          "id": 1,
+          "name": "Marko",
+          "surname": "Markovic",
+          "personalIdentificationNumber": "1234567891234",
+          "dateOfBirth": "1980-02-02",
+          "dateOfEmployment": "2010-02-02",
+          "address": "Jove Ilica",
+          "title": "DR",
+          "vocation": "ASISTENT"
+        }
+      }
+    ],
+    "thematicUnitsList": [
+      {
+        "name": "Tematska jedinica",
+        "serialNumber": "1.",
+        "description": "Opis tematske jedinice",
+        "parentThematicUnit": null
+      }
+    ]
+  },
+  "status": "OK",
+  "message": null,
+  "errors": null
+}

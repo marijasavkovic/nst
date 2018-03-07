@@ -54,4 +54,10 @@ public interface CourseMapper {
     @Mapping(target = "levelOfStudies", ignore = true)
     @Mapping(target = "department", ignore = true)
     void updateEntityFromModel(CourseCmd courseCmd, @MappingTarget CourseEntity courseEntity);
+
+    @Mapping(target = "lecturerList", ignore = true)
+    @Mapping(target = "thematicUnitsList", ignore = true)
+    @Mapping(target = "levelOfStudiesId", ignore = true)
+    @Mapping(target = "departmentId", ignore = true)
+    CourseCmd courseToCourseCmd (Course course);
 }

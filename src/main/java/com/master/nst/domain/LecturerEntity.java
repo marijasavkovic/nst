@@ -45,7 +45,14 @@ public class LecturerEntity extends BaseEntity<Long> {
     }
 
     public void setCourse(final CourseEntity course) {
+        setCourse(course, true);
+    }
+
+    void setCourse(CourseEntity course, boolean add) {
         this.course = course;
+        if (course != null && add) {
+            course.addLecturer(this, false);
+        }
     }
 
     public TeachingTypeEntity getTeachingType() {
@@ -74,6 +81,20 @@ public class LecturerEntity extends BaseEntity<Long> {
             .append("course")
             .append(course.getName())
             .append("teaching type")
-            .append(teachingType.getName()).toString();
+            .append(teachingType.getName())
+            .toString();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof LecturerEntity) {
+            LecturerEntity lecturerEntity = (LecturerEntity) obj;
+            if (lecturerEntity.getTeachingType() != null && lecturerEntity.getEmployee() != null) {
+                if (lecturerEntity.getTeachingType().equals(teachingType) && lecturerEntity.getEmployee().equals(employee)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

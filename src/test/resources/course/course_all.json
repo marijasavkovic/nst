@@ -1,0 +1,14 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Napredne softverske tehnologije",
+      "espb": 6,
+      "levelOfStudiesName": "Master i specijalisticke studije",
+      "departmentName": "Katedra za softversko inzenjerstvo"
+    }
+  ],
+  "status": "OK",
+  "message": null,
+  "errors": null
+}
