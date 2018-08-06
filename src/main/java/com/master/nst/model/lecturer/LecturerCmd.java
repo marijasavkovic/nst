@@ -13,7 +13,7 @@ public class LecturerCmd implements Serializable {
     @NotNull(message = ErrorMessages.TEACHING_TYPE_NULL)
     private Long teachingTypeId;
 
-    @NotNull(message = ErrorMessages.COURSE_NULL)
+    @NotNull(message = ErrorMessages.EMPLOYEE_NULL)
     private Long employeeId;
 
     public Long getId() {

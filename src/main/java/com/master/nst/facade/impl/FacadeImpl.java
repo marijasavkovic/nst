@@ -10,11 +10,15 @@ import com.master.nst.model.employee.EmployeeCmd;
 import com.master.nst.model.employee.EmployeeRecord;
 import com.master.nst.model.levelofstudies.LevelOfStudies;
 import com.master.nst.model.teachingtype.TeachingType;
+import com.master.nst.model.user.User;
+import com.master.nst.model.user.UserCmd;
+import com.master.nst.model.user.UserRecord;
 import com.master.nst.service.CourseService;
 import com.master.nst.service.DepartmentService;
 import com.master.nst.service.EmployeeService;
 import com.master.nst.service.LevelOfStudiesService;
 import com.master.nst.service.TeachingTypeService;
+import com.master.nst.service.UserService;
 import com.master.nst.sheard.errors.Error;
 import com.master.nst.sheard.exception.ValidationException;
 import com.master.nst.sheard.response.Response;
@@ -45,6 +49,7 @@ public class FacadeImpl implements Facade {
     private final TeachingTypeService teachingTypeService;
     private final EmployeeService employeeService;
     private final CourseService courseService;
+    private final UserService userService;
 
     @Autowired
     public FacadeImpl(
@@ -52,13 +57,15 @@ public class FacadeImpl implements Facade {
         final DepartmentService departmentService,
         final TeachingTypeService teachingTypeService,
         final EmployeeService employeeService,
-        final CourseService courseService)
+        final CourseService courseService,
+        final UserService userService)
     {
         this.levelOfStudiesService = levelOfStudiesService;
         this.departmentService = departmentService;
         this.teachingTypeService = teachingTypeService;
         this.employeeService = employeeService;
         this.courseService = courseService;
+        this.userService = userService;
     }
 
     @Override
@@ -113,6 +120,36 @@ public class FacadeImpl implements Facade {
     @DeleteMapping(path = "course/{courseId}")
     public Response<?> deleteCourse(@PathVariable Long courseId) {
         return courseService.delete(courseId);
+    }
+
+    @Override
+    @GetMapping("user/findAllUsers")
+    public Response<List<UserRecord>> findAllUsers() {
+        return userService.findAll();
+    }
+
+    @Override
+    @GetMapping("user/{userId}")
+    public Response<User> findUserById(@PathVariable Long userId) {
+        return userService.findById(userId);
+    }
+
+    @Override
+    @PostMapping("user")
+    public Response<User> addUser(@Validated(ValidationGroups.Add.class) @RequestBody UserCmd userCmd) {
+        return userService.add(userCmd);
+    }
+
+    @Override
+    @PutMapping("user/{userId}")
+    public Response<User> editUser(@PathVariable  Long userId, @Validated(ValidationGroups.Edit.class) @RequestBody  UserCmd userCmd) {
+        return userService.edit(userId, userCmd);
+    }
+
+    @Override
+    @DeleteMapping(path = "user/{userId}")
+    public Response<?> deleteUser(@PathVariable Long userId) {
+        return userService.delete(userId);
     }
 
     @Override

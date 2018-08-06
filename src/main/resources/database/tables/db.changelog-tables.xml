@@ -13,6 +13,7 @@
         <sqlFile path="scripts/course.sql" relativeToChangelogFile="true"/>
         <sqlFile path="scripts/lecturer.sql" relativeToChangelogFile="true"/>
         <sqlFile path="scripts/thematic_unit.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="scripts/user.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
 </databaseChangeLog>

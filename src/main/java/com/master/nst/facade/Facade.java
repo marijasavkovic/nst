@@ -9,6 +9,9 @@ import com.master.nst.model.employee.EmployeeCmd;
 import com.master.nst.model.employee.EmployeeRecord;
 import com.master.nst.model.levelofstudies.LevelOfStudies;
 import com.master.nst.model.teachingtype.TeachingType;
+import com.master.nst.model.user.User;
+import com.master.nst.model.user.UserCmd;
+import com.master.nst.model.user.UserRecord;
 import com.master.nst.sheard.response.Response;
 
 import java.util.List;
@@ -40,4 +43,14 @@ public interface Facade {
     Response<?> deleteEmployee(Long employeeId);
 
     Response<?> deleteCourse(Long courseId);
+
+    Response<List<UserRecord>> findAllUsers();
+
+    Response<User> findUserById(Long id);
+
+    Response<User> addUser(UserCmd userCmd);
+
+    Response<User> editUser(Long userId, UserCmd userCmd);
+
+    Response<?> deleteUser(Long userId);
 }
