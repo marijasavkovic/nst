@@ -78,7 +78,7 @@ public class CourseTest {
 
     @Test
     @Transactional
-    public void testGetEmployee() throws Exception {
+    public void testGetCourse() throws Exception {
         CourseEntity courseEntity = courseRepository.findByName("Napredne softverske tehnologije").get();
         this.mockMvc
             .perform(MockMvcRequestBuilders.get(GENERAL_PATH + "/{courseId}", courseEntity.getId()))

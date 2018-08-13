@@ -1,6 +1,8 @@
 package com.master.nst.service.impl;
 
 import com.master.nst.domain.EmployeeEntity;
+import com.master.nst.elasticsearch.index.EmployeeIndexer;
+import com.master.nst.elasticsearch.service.EmployeeElasticService;
 import com.master.nst.mapper.EmployeeMapper;
 import com.master.nst.model.employee.Employee;
 import com.master.nst.model.employee.EmployeeCmd;
@@ -10,6 +12,7 @@ import com.master.nst.service.EmployeeService;
 import com.master.nst.sheard.response.Response;
 import com.master.nst.sheard.response.ResponseStatus;
 import com.master.nst.validator.employee.EmployeeValidator;
+import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +31,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeValidator.Delete employeeValidatorDelete;
 
     @Autowired
+    EmployeeElasticService elasticService;
+
+    @Autowired
     public EmployeeServiceImpl(final EmployeeRepository employeeRepository,
                                final EmployeeMapper employeeMapper,
                                final EmployeeValidator.Add employeeValidatorAdd,
@@ -43,49 +49,44 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Response<List<EmployeeRecord>> findAll() {
-        return new Response<>(employeeMapper.mapToModelList(employeeRepository.findAll()));
+        return new Response<>(employeeMapper.mapToModelList(elasticService.findAll()));
     }
 
     @Override
     public Response<Employee> findById(final Long id) {
-        Optional<Employee> employee = employeeRepository.findById(id).map(employeeMapper::mapToModel);
-        return employee.map(Response::new).orElse(new Response<>(ResponseStatus.NOT_FOUND));
+        try {
+            EmployeeEntity employeeEntity = elasticService.findById(id);
+            return new Response<>(employeeMapper.mapToModel(employeeEntity));
+        } catch (Exception e) {
+            return new Response<>(ResponseStatus.NOT_FOUND);
+        }
     }
 
     @Override
     public Response<Employee> add(final EmployeeCmd employeeCmd) {
-        return new Response<>(addEmployee(employeeCmd));
+        try {
+            employeeValidatorAdd.validate(employeeCmd);
+            return new Response<>(employeeMapper.mapToModel(elasticService.save(employeeMapper.mapToEntity(employeeCmd))));
+        } catch (Exception e) {
+            return new Response<>(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public Response<Employee> edit(final Long employeeId, final EmployeeCmd employeeCmd) {
-        return new Response<>(editEmployee(employeeId, employeeCmd));
+        employeeValidatorEdit.validate(employeeId, employeeCmd);
+        try {
+            return new Response<>(employeeMapper.mapToModel(elasticService.update(employeeMapper.mapToEntity(employeeCmd))));
+        } catch (Exception e) {
+            return new Response<>(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public Response<?> delete(final Long employeeId) {
         employeeValidatorDelete.validate(employeeId);
-        employeeRepository.delete(employeeId);
+        elasticService.delete(employeeId);
         return new Response<>(ResponseStatus.OK, "Employee is deleted successfully!");
     }
-
-    private Employee addEmployee (EmployeeCmd employeeCmd) {
-        employeeValidatorAdd.validate(employeeCmd);
-
-        EmployeeEntity employeeEntity = employeeMapper.mapToEntity(employeeCmd);
-        return employeeMapper.mapToModel(employeeRepository.save(employeeEntity));
-    }
-
-    private Employee editEmployee (Long employeeId, EmployeeCmd employeeCmd){
-        employeeValidatorEdit.validate(employeeId, employeeCmd);
-
-        EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
-                                                          .orElseThrow(RuntimeException::new);
-
-        employeeMapper.updateEntityFromModel(employeeCmd, employeeEntity);
-        return employeeMapper.mapToModel(employeeRepository.save(employeeEntity));
-
-    }
-
 
 }

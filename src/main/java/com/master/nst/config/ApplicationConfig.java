@@ -1,5 +1,7 @@
 package com.master.nst.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.master.nst.elasticsearch.ElasticSearchClient;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,5 +20,13 @@ public class ApplicationConfig {
         return DataSourceBuilder.create().build();
     }
 
+    @Bean
+    public ElasticSearchClient elasticSearchClient(){
+        return new ElasticSearchClient();
+    }
 
+    @Bean
+    public ObjectMapper objectMapper(){
+        return new ObjectMapper();
+    }
 }

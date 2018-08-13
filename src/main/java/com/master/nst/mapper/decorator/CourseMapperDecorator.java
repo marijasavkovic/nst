@@ -7,7 +7,9 @@ import com.master.nst.domain.LecturerEntity;
 import com.master.nst.domain.LevelOfStudiesEntity;
 import com.master.nst.domain.TeachingTypeEntity;
 import com.master.nst.domain.ThematicUnitEntity;
+import com.master.nst.elasticsearch.service.EmployeeElasticService;
 import com.master.nst.mapper.CourseMapper;
+import com.master.nst.mapper.EmployeeMapper;
 import com.master.nst.model.course.Course;
 import com.master.nst.model.course.CourseCmd;
 import com.master.nst.model.course.CourseRecord;
@@ -36,10 +38,13 @@ public abstract class CourseMapperDecorator implements CourseMapper {
     private LevelOfStudiesRepository levelOfStudiesRepository;
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private TeachingTypeRepository teachingTypeRepository;
 
     @Autowired
-    private TeachingTypeRepository teachingTypeRepository;
+    private EmployeeElasticService elasticService;
+
+    @Autowired
+    private EmployeeMapper employeeMapper;
 
     @Override
     public List<CourseRecord> mapToModelList(final List<CourseEntity> courseEntities) {
@@ -95,13 +100,6 @@ public abstract class CourseMapperDecorator implements CourseMapper {
     @Override
     public LecturerEntity lecturerCmdToLecturerEntity(final LecturerCmd lecturerCmd) {
         LecturerEntity lecturerEntity = courseMapper.lecturerCmdToLecturerEntity(lecturerCmd);
-
-        if (lecturerCmd.getEmployeeId() != null) {
-            EmployeeEntity employeeEntity = employeeRepository
-                .findById(lecturerCmd.getEmployeeId())
-                .orElseThrow(RuntimeException::new);
-            lecturerEntity.setEmployee(employeeEntity);
-        }
 
         if (lecturerCmd.getTeachingTypeId() != null) {
             TeachingTypeEntity teachingTypeEntity = teachingTypeRepository
@@ -255,5 +253,40 @@ public abstract class CourseMapperDecorator implements CourseMapper {
         thematicUnitCmd.setSerialNumber(thematicUnit.getSerialNumber());
         thematicUnitCmd.setParentThematicUnitSerialNumber(thematicUnit.getParentThematicUnit()!=null ? thematicUnit.getParentThematicUnit().getSerialNumber():null);
         return thematicUnitCmd;
+    }
+
+    @Override
+    public Lecturer lecturerEntityToLecturer(final LecturerEntity lecturerEntity) {
+        Lecturer lecturer = courseMapper.lecturerEntityToLecturer(lecturerEntity);
+
+        if(lecturerEntity.getEmployee()!=null){
+            lecturer.setEmployee(employeeMapper.mapToModel(elasticService.findById(lecturerEntity.getEmployee())));
+        }
+
+        return lecturer;
+    }
+
+    @Override
+    public Course mapToModel(final CourseEntity courseEntity) {
+        Course course = courseMapper.mapToModel(courseEntity);
+
+        if(courseEntity.getLecturerList()!=null){
+            course.setLecturerList(lecturerEntityListToLecturerList(courseEntity.getLecturerList()));
+        }
+
+        return course;
+    }
+
+    private List<Lecturer> lecturerEntityListToLecturerList(List<LecturerEntity> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<Lecturer> list1 = new ArrayList<Lecturer>( list.size() );
+        for ( LecturerEntity lecturerEntity : list ) {
+            list1.add( lecturerEntityToLecturer( lecturerEntity ) );
+        }
+
+        return list1;
     }
 }

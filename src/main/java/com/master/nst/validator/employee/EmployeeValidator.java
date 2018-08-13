@@ -2,6 +2,7 @@ package com.master.nst.validator.employee;
 
 import com.master.nst.domain.CourseEntity;
 import com.master.nst.domain.EmployeeEntity;
+import com.master.nst.elasticsearch.service.EmployeeElasticService;
 import com.master.nst.model.employee.EmployeeCmd;
 import com.master.nst.repository.CourseRepository;
 import com.master.nst.repository.EmployeeRepository;
@@ -18,14 +19,14 @@ import java.util.Optional;
 @Component
 public class EmployeeValidator {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeElasticService employeeElasticService;
     private final CourseRepository courseRepository;
 
     @Autowired
     public EmployeeValidator(
-        final EmployeeRepository employeeRepository, final CourseRepository courseRepository)
+        final EmployeeElasticService employeeElasticService, final CourseRepository courseRepository)
     {
-        this.employeeRepository = employeeRepository;
+        this.employeeElasticService = employeeElasticService;
         this.courseRepository = courseRepository;
     }
 
@@ -35,12 +36,12 @@ public class EmployeeValidator {
         public void validate(EmployeeCmd employeeCmd) {
 
             String personalIndentificationNumber = employeeCmd.getPersonalIdentificationNumber();
-            final Optional<EmployeeEntity> employeeEntity = employeeRepository.findByPersonalIdentificationNumber(
+            EmployeeEntity employeeEntity = employeeElasticService.findByPersonalIdentificationNumber(
                 personalIndentificationNumber);
 
             List<Error> errors = new ArrayList<>();
 
-            if (employeeEntity.isPresent()) {
+            if (employeeEntity != null) {
                 errors.add(new Error("Employee with this personal indentification number already exists"));
             }
 
@@ -62,21 +63,23 @@ public class EmployeeValidator {
         public void validate(Long employeeId, EmployeeCmd employeeCmd) {
 
             String personalIndentificationNumber = employeeCmd.getPersonalIdentificationNumber();
-            final Optional<EmployeeEntity> employee = employeeRepository.findByPersonalIdentificationNumber(
+            EmployeeEntity employeeEntity = employeeElasticService.findByPersonalIdentificationNumber(
                 personalIndentificationNumber);
 
             List<Error> errors = new ArrayList<>();
 
-            if (employee.isPresent()) {
-                if (!employee.get().getId().equals(employeeId)) {
+            if (employeeEntity != null) {
+                if (!employeeEntity.getId().equals(employeeId)) {
                     errors.add(new Error("Employee with this personal indentification number already exists"));
                 }
             }
 
-            EmployeeEntity employeeEntity = employeeRepository
-                .findById(employeeId)
-                .orElseThrow(() -> new ValidationException(new Error("Employee with that id does not exists")));
-            ;
+            EmployeeEntity employeeEntity1 = employeeElasticService
+                .findById(employeeId);
+
+            if(employeeEntity1 == null){
+                throw new ValidationException(new Error("Employee with that id does not exists"));
+            }
 
             Error error = DateValidator.dateInPast(employeeCmd.getDateOfBirth(), "Date of birth");
 
@@ -96,9 +99,12 @@ public class EmployeeValidator {
 
         public void validate(Long employeeId) {
 
-            EmployeeEntity employeeEntity = employeeRepository
-                .findById(employeeId)
-                .orElseThrow(() -> new ValidationException(new Error("Employee with that id does not exists")));
+            EmployeeEntity employeeEntity = employeeElasticService
+                .findById(employeeId);
+
+            if(employeeEntity==null){
+                throw  new ValidationException(new Error("Employee with that id does not exists"));
+            }
 
             List<CourseEntity> courseEntities = courseRepository.findByEmployeeId(employeeId);
 

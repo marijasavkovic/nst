@@ -4,6 +4,7 @@ import com.master.nst.domain.LecturerEntity;
 import com.master.nst.model.lecturer.Lecturer;
 import com.master.nst.sheard.constants.Constants;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public interface LecturerMapper {
 
     List<Lecturer> mapToModelList (List<LecturerEntity> courseEntities);
 
+    @Mapping(target = "employee", ignore = true)
     Lecturer mapToModel(LecturerEntity entity);
 
 }

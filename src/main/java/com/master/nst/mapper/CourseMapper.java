@@ -29,8 +29,10 @@ public interface CourseMapper {
     @Mapping(target = "departmentName", ignore = true)
     CourseRecord mapToRecord (CourseEntity courseEntity);
 
+    @Mapping(target = "lecturerList", ignore = true)
     Course mapToModel (CourseEntity courseEntity);
 
+    @Mapping(target = "employee", ignore = true)
     Lecturer lecturerEntityToLecturer (LecturerEntity lecturerEntity);
 
     ThematicUnit thematicUnitEntityToThematicUnit (ThematicUnitEntity thematicUnitEntity);
@@ -41,7 +43,7 @@ public interface CourseMapper {
 
     @Mapping(target = "course", ignore = true)
     @Mapping(target = "teachingType", ignore = true)
-    @Mapping(target = "employee", ignore = true)
+    @Mapping(target = "employee", source = "employeeId")
     LecturerEntity lecturerCmdToLecturerEntity (LecturerCmd lecturerCmd);
 
     @Mapping(target = "parentThematicUnit", ignore = true)

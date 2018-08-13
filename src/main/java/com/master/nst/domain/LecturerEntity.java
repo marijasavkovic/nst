@@ -3,6 +3,7 @@ package com.master.nst.domain;
 import com.master.nst.sheard.domain.BaseEntity;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -26,9 +27,11 @@ public class LecturerEntity extends BaseEntity<Long> {
     @JoinColumn(name = "teaching_type_id")
     private TeachingTypeEntity teachingType;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "employee_id")
-    private EmployeeEntity employee;
+//    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @JoinColumn(name = "employee_id")
+//    private EmployeeEntity employee;
+    @Column(name = "employee_id")
+    private Long employee;
 
     @Override
     public Long getId() {
@@ -63,11 +66,11 @@ public class LecturerEntity extends BaseEntity<Long> {
         this.teachingType = teachingType;
     }
 
-    public EmployeeEntity getEmployee() {
+    public Long getEmployee() {
         return employee;
     }
 
-    public void setEmployee(final EmployeeEntity employee) {
+    public void setEmployee(final long employee) {
         this.employee = employee;
     }
 
@@ -77,7 +80,7 @@ public class LecturerEntity extends BaseEntity<Long> {
             .append("id")
             .append(id)
             .append("employee")
-            .append(employee.getName())
+            .append(employee)
             .append("course")
             .append(course.getName())
             .append("teaching type")

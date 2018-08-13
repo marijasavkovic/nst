@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface CourseRepository extends BaseRepository<CourseEntity, Long> {
 
     @Query(
-        "select c from CourseEntity c left join c.lecturerList l left join l.employee e where e.id = ?1 ")
+        "select c from CourseEntity c left join c.lecturerList l where l.employee = ?1 ")
     List<CourseEntity> findByEmployeeId (Long employeeId);
 
     Optional<CourseEntity> findByName(String name);
