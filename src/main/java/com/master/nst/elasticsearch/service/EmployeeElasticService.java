@@ -4,17 +4,17 @@ import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import com.master.nst.domain.EmployeeEntity;
-import com.master.nst.elasticsearch.ElasticSearchClient;
 import com.master.nst.elasticsearch.index.EmployeeIndexer;
 import com.master.nst.elasticsearch.mapper.EmployeeElasticMapper;
-import com.master.nst.elasticsearch.util.ElasticSearchUtil;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.metrics.max.Max;
 import org.elasticsearch.search.aggregations.metrics.max.MaxAggregationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +22,27 @@ import java.util.List;
 @Service
 public class EmployeeElasticService {
 
+    private final EmployeeIndexer employeeIndexer;
+    private final EmployeeElasticMapper employeeElasticMapper;
+    private final Client elasticSearchClient;
+    private final String employeeIndex;
+    private final String employeeType;
+
     @Autowired
-    private ElasticSearchClient elasticSearchClient;
-    @Autowired
-    private EmployeeElasticMapper employeeElasticMapper;
-    @Autowired
-    private EmployeeIndexer employeeIndexer;
+    public EmployeeElasticService(
+        EmployeeIndexer employeeIndexer,
+        EmployeeElasticMapper employeeElasticMapper,
+        Client elasticSearchClient,
+        @Value("${elasticsearch.employeeindex}") String employeeIndex,
+        @Value("${elasticsearch.employeetype}") String employeeType)
+    {
+        this.employeeIndexer = employeeIndexer;
+        this.employeeElasticMapper = employeeElasticMapper;
+        this.elasticSearchClient = elasticSearchClient;
+        this.employeeIndex = employeeIndex;
+        this.employeeType = employeeType;
+        this.employeeIndexer.createEmployeeIndexIfNotExists();
+    }
 
     public List<EmployeeEntity> searchEmployees(String query, int limit, int page) {
         int offset = (page - 1) * limit;
@@ -37,14 +52,12 @@ public class EmployeeElasticService {
             boolQuery
                 .should(QueryBuilders.queryStringQuery(query + "*").field("name"))
                 .should(QueryBuilders.queryStringQuery(query + "*").field("surname"))
-                .should(QueryBuilders.queryStringQuery(query + "*").field("personalIdentificationNumber"))
-                .should(QueryBuilders.queryStringQuery(query + "*").field("email"));
+                .should(QueryBuilders.queryStringQuery(query + "*").field("personalIdentificationNumber"));
         }
 
         SearchResponse searchResponse = elasticSearchClient
-            .getClient()
-            .prepareSearch(ElasticSearchUtil.EMPLOYEE_INDEX)
-            .setTypes(ElasticSearchUtil.EMPLOYEE_TYPE)
+            .prepareSearch(employeeIndex)
+            .setTypes(employeeType)
             .setQuery(boolQuery)
             .setFrom(offset)
             .setSize(limit)
@@ -56,9 +69,8 @@ public class EmployeeElasticService {
 
     public List<EmployeeEntity> findAll() {
         SearchResponse searchResponse = elasticSearchClient
-            .getClient()
-            .prepareSearch(ElasticSearchUtil.EMPLOYEE_INDEX)
-            .setTypes(ElasticSearchUtil.EMPLOYEE_TYPE)
+            .prepareSearch(employeeIndex)
+            .setTypes(employeeType)
             .execute()
             .actionGet();
 
@@ -69,42 +81,38 @@ public class EmployeeElasticService {
         BoolQueryBuilder boolQuery = boolQuery();
         boolQuery.must(termQuery("id", employeeId));
         SearchResponse searchResponse = elasticSearchClient
-            .getClient()
-            .prepareSearch(ElasticSearchUtil.EMPLOYEE_INDEX)
-            .setTypes(ElasticSearchUtil.EMPLOYEE_TYPE)
+            .prepareSearch(employeeIndex)
+            .setTypes(employeeType)
             .setQuery(boolQuery)
             .execute()
             .actionGet();
         List<EmployeeEntity> employeeEntities = employeeElasticMapper.mapToEmployeeEntityList(searchResponse);
-        System.out.println("****** " +employeeEntities);
-        if(employeeEntities.isEmpty()){
+        if (employeeEntities.isEmpty()) {
             return null;
         }
         return employeeEntities.get(0);
     }
 
-    public EmployeeEntity findByPersonalIdentificationNumber(String personalIdentificationNumber){
+    public EmployeeEntity findByPersonalIdentificationNumber(String personalIdentificationNumber) {
         BoolQueryBuilder boolQuery = boolQuery();
         boolQuery.must(termQuery("personalIdentificationNumber", personalIdentificationNumber));
         SearchResponse searchResponse = elasticSearchClient
-            .getClient()
-            .prepareSearch(ElasticSearchUtil.EMPLOYEE_INDEX)
-            .setTypes(ElasticSearchUtil.EMPLOYEE_TYPE)
+            .prepareSearch(employeeIndex)
+            .setTypes(employeeType)
             .setQuery(boolQuery)
             .execute()
             .actionGet();
         List<EmployeeEntity> employeeEntities = employeeElasticMapper.mapToEmployeeEntityList(searchResponse);
-        if(employeeEntities.isEmpty()){
+        if (employeeEntities.isEmpty()) {
             return null;
         }
         return employeeEntities.get(0);
     }
 
-    public EmployeeEntity save(EmployeeEntity employeeEntity) throws Exception {
+    public void save(EmployeeEntity employeeEntity) throws Exception {
         employeeIndexer.createEmployeeIndexIfNotExists();
-        employeeEntity.setId(getMaxId()+1);
+        employeeEntity.setId(getMaxId() + 1);
         employeeIndexer.indexEmployee(employeeEntity);
-        return findById(employeeEntity.getId());
     }
 
     public EmployeeEntity update(EmployeeEntity employeeEntity) throws Exception {
@@ -112,21 +120,20 @@ public class EmployeeElasticService {
         return findById(employeeEntity.getId());
     }
 
-    public void delete(Long employeeId){
+    public void delete(Long employeeId) {
         employeeIndexer.deleteEmployee(employeeId);
     }
 
     public Long getMaxId() {
         MaxAggregationBuilder aggregation = AggregationBuilders.max("id").field("id");
         SearchResponse searchResponse = elasticSearchClient
-            .getClient()
-            .prepareSearch(ElasticSearchUtil.EMPLOYEE_INDEX)
-            .setTypes(ElasticSearchUtil.EMPLOYEE_TYPE)
+            .prepareSearch(employeeIndex)
+            .setTypes(employeeType)
             .addAggregation(aggregation)
             .execute()
             .actionGet();
         Max id = searchResponse.getAggregations().get("id");
-        return (long)id.getValue();
+        return !Double.isInfinite(id.getValue()) ? (long) id.getValue() : 0;
     }
 
 }

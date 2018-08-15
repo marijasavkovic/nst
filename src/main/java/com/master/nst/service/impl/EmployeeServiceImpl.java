@@ -1,6 +1,7 @@
 package com.master.nst.service.impl;
 
 import com.master.nst.domain.EmployeeEntity;
+import com.master.nst.domain.UserEntity;
 import com.master.nst.elasticsearch.index.EmployeeIndexer;
 import com.master.nst.elasticsearch.service.EmployeeElasticService;
 import com.master.nst.mapper.EmployeeMapper;
@@ -56,6 +57,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Response<Employee> findById(final Long id) {
         try {
             EmployeeEntity employeeEntity = elasticService.findById(id);
+            if(employeeEntity == null){
+                return new Response<>(ResponseStatus.NOT_FOUND);
+            }
             return new Response<>(employeeMapper.mapToModel(employeeEntity));
         } catch (Exception e) {
             return new Response<>(ResponseStatus.NOT_FOUND);
@@ -66,7 +70,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Response<Employee> add(final EmployeeCmd employeeCmd) {
         try {
             employeeValidatorAdd.validate(employeeCmd);
-            return new Response<>(employeeMapper.mapToModel(elasticService.save(employeeMapper.mapToEntity(employeeCmd))));
+            elasticService.save(employeeMapper.mapToEntity(employeeCmd));
+            return new Response<>(employeeMapper.mapToModel(employeeMapper.mapToEntity(employeeCmd)));
         } catch (Exception e) {
             return new Response<>(ResponseStatus.INTERNAL_SERVER_ERROR);
         }
@@ -75,8 +80,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Response<Employee> edit(final Long employeeId, final EmployeeCmd employeeCmd) {
         employeeValidatorEdit.validate(employeeId, employeeCmd);
+
+        EmployeeEntity employeeEntity = elasticService.findById(employeeId);
+        employeeMapper.updateEntityFromModel(employeeCmd, employeeEntity);
         try {
-            return new Response<>(employeeMapper.mapToModel(elasticService.update(employeeMapper.mapToEntity(employeeCmd))));
+            elasticService.update(employeeEntity);
+            return new Response<>(employeeMapper.mapToModel(employeeEntity));
         } catch (Exception e) {
             return new Response<>(ResponseStatus.INTERNAL_SERVER_ERROR);
         }

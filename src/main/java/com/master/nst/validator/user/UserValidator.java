@@ -1,6 +1,7 @@
 package com.master.nst.validator.user;
 
 import com.master.nst.domain.UserEntity;
+import com.master.nst.elasticsearch.service.UserElasticService;
 import com.master.nst.model.user.UserCmd;
 import com.master.nst.repository.UserRepository;
 import com.master.nst.sheard.errors.Error;
@@ -16,7 +17,7 @@ import java.util.Optional;
 public class UserValidator {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserElasticService userElasticService;
 
     @Component
     public class Add {
@@ -24,11 +25,11 @@ public class UserValidator {
         public void validate(UserCmd userCmd) {
 
             String username = userCmd.getUsername();
-            final Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+            final UserEntity userEntity = userElasticService.findByUsername(username);
 
             List<Error> errors = new ArrayList<>();
 
-            if (userEntity.isPresent()) {
+            if (userEntity != null) {
                 errors.add(new Error("User with this username already exists"));
             }
 
@@ -45,20 +46,20 @@ public class UserValidator {
         public void validate(Long userId, UserCmd userCmd) {
 
             String username = userCmd.getUsername();
-            final Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+            final UserEntity userEntity = userElasticService.findByUsername(username);
 
             List<Error> errors = new ArrayList<>();
 
-            if (userEntity.isPresent()) {
-                if (!userEntity.get().getId().equals(userId)) {
+            if (userEntity != null) {
+                if (!userEntity.getId().equals(userId)) {
                     errors.add(new Error("User with username already exists"));
                 }
             }
 
-            UserEntity user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new ValidationException(new Error("User with that id does not exists")));
-            ;
+            UserEntity user = userElasticService.findById(userId);
+            if (user == null) {
+                throw new ValidationException(new Error("User with that id does not exists"));
+            }
 
             if (!errors.isEmpty()) {
                 throw new ValidationException(errors);
@@ -72,10 +73,10 @@ public class UserValidator {
 
         public void validate(Long userId) {
 
-            UserEntity user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new ValidationException(new Error("User with that id does not exists")));
-            ;
+            UserEntity user = userElasticService.findById(userId);
+            if (user == null) {
+                throw new ValidationException(new Error("User with that id does not exists"));
+            }
         }
 
     }

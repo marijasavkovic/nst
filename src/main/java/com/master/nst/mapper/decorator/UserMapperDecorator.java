@@ -3,6 +3,7 @@ package com.master.nst.mapper.decorator;
 import com.master.nst.domain.CourseEntity;
 import com.master.nst.domain.EmployeeEntity;
 import com.master.nst.domain.UserEntity;
+import com.master.nst.elasticsearch.service.EmployeeElasticService;
 import com.master.nst.mapper.UserMapper;
 import com.master.nst.model.course.CourseRecord;
 import com.master.nst.model.user.User;
@@ -19,7 +20,7 @@ public abstract class UserMapperDecorator implements UserMapper {
     @Autowired
     private UserMapper userMapper;
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeElasticService employeeElasticService;
 
     @Override
     public List<UserRecord> mapToModelList(final List<UserEntity> userEntities) {
@@ -51,8 +52,7 @@ public abstract class UserMapperDecorator implements UserMapper {
         UserEntity userEntity = userMapper.mapToEntity(model);
 
         if(model.getEmployee() != null){
-            EmployeeEntity employeeEntity = employeeRepository.findById(model.getEmployee()).orElseThrow(RuntimeException::new);
-            userEntity.setEmployee(employeeEntity);
+            userEntity.setEmployee(getEmployee(model.getEmployee()));
         }
 
         return userEntity;
@@ -66,8 +66,17 @@ public abstract class UserMapperDecorator implements UserMapper {
         userMapper.updateEntityFromModel(model, entity);
 
         if(model.getEmployee() != null){
-            EmployeeEntity employeeEntity = employeeRepository.findById(model.getEmployee()).orElseThrow(RuntimeException::new);
-            entity.setEmployee(employeeEntity);
+            entity.setEmployee(getEmployee(model.getEmployee()));
         }
+    }
+
+
+    private EmployeeEntity getEmployee(long employeeId){
+        EmployeeEntity employeeEntity = employeeElasticService.findById(employeeId);
+
+        if(employeeEntity == null){
+            throw new RuntimeException();
+        }
+        return employeeEntity;
     }
 }

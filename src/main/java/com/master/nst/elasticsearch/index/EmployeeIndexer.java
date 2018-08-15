@@ -1,15 +1,15 @@
 package com.master.nst.elasticsearch.index;
 
 import com.master.nst.domain.EmployeeEntity;
-import com.master.nst.elasticsearch.ElasticSearchClient;
-import com.master.nst.elasticsearch.util.ElasticSearchUtil;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -18,46 +18,49 @@ import java.util.Date;
 public class EmployeeIndexer {
 
     @Autowired
-    private ElasticSearchClient elasticClient;
+    private Client elasticClient;
+    @Value("${elasticsearch.employeeindex}")
+    private String employeeIndex;
+    @Value("${elasticsearch.employeetype}")
+    private String employeeType;
 
     public void indexEmployee(EmployeeEntity employeeEntity) throws Exception {
         IndexResponse indexResponse = elasticClient
-            .getClient()
-            .prepareIndex(ElasticSearchUtil.EMPLOYEE_INDEX, ElasticSearchUtil.EMPLOYEE_TYPE,
+            .prepareIndex(employeeIndex, employeeType,
                           String.valueOf(employeeEntity.getId()))
             .setSource(buildEmployee(employeeEntity))
             .get();
     }
 
     public void updateEmployee(EmployeeEntity employeeEntity) throws Exception {
-        elasticClient.getClient().prepareUpdate(
-            ElasticSearchUtil.EMPLOYEE_INDEX, ElasticSearchUtil.EMPLOYEE_TYPE, String.valueOf(employeeEntity.getId()))
+        elasticClient.prepareUpdate(
+            employeeIndex, employeeType, String.valueOf(employeeEntity.getId()))
             .setDoc(buildEmployee(employeeEntity)).get();
     }
 
     public void createEmployeeIndexIfNotExists() {
-        boolean exists = elasticClient.getClient().admin().indices()
-            .prepareExists(ElasticSearchUtil.EMPLOYEE_INDEX)
+        boolean exists = elasticClient.admin().indices()
+            .prepareExists(employeeIndex)
             .execute().actionGet().isExists();
         if (!exists) {
-            CreateIndexResponse createIndexResponse = elasticClient.getClient().admin().indices().
-                create(Requests.createIndexRequest(ElasticSearchUtil.EMPLOYEE_INDEX)).actionGet();
+            CreateIndexResponse createIndexResponse = elasticClient.admin().indices().
+                create(Requests.createIndexRequest(employeeIndex)).actionGet();
         }
     }
 
     public void deleteEmployeeIndexes() {
-        boolean exists = elasticClient.getClient().admin().indices()
-            .prepareExists(ElasticSearchUtil.EMPLOYEE_INDEX)
+        boolean exists = elasticClient.admin().indices()
+            .prepareExists(employeeIndex)
             .execute().actionGet().isExists();
         if (exists) {
-            elasticClient.getClient().
-                admin().indices().delete(new DeleteIndexRequest(ElasticSearchUtil.EMPLOYEE_INDEX)).actionGet();
+            elasticClient.
+                admin().indices().delete(new DeleteIndexRequest(employeeIndex)).actionGet();
         }
     }
 
     public void deleteEmployee(Long employeeId) {
-        elasticClient.getClient().prepareDelete(ElasticSearchUtil.EMPLOYEE_INDEX,
-                                                ElasticSearchUtil.EMPLOYEE_TYPE, String.valueOf(employeeId)).get();
+        elasticClient.prepareDelete(employeeIndex,
+                                                employeeType, String.valueOf(employeeId)).get();
     }
 
     public XContentBuilder buildEmployee(EmployeeEntity employeeEntity) throws Exception {
