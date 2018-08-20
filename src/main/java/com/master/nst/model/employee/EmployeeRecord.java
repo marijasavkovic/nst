@@ -13,7 +13,6 @@ public class EmployeeRecord implements Serializable{
     private String name;
     private String surname;
     private String personalIdentificationNumber;
-    private Date dateOfEmployment;
     private EmployeeTitle title;
     private EmployeeVocation vocation;
 
@@ -47,14 +46,6 @@ public class EmployeeRecord implements Serializable{
 
     public void setPersonalIdentificationNumber(final String personalIdentificationNumber) {
         this.personalIdentificationNumber = personalIdentificationNumber;
-    }
-
-    public Date getDateOfEmployment() {
-        return dateOfEmployment;
-    }
-
-    public void setDateOfEmployment(final Date dateOfEmployment) {
-        this.dateOfEmployment = dateOfEmployment;
     }
 
     public EmployeeTitle getTitle() {
