@@ -1,0 +1,67 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN"
+        "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+   http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="employeeReport" pageWidth="595" pageHeight="842"
+              columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20">
+
+    <parameter name="idCourse" class="java.lang.Long" />
+    <queryString>
+        <![CDATA[SELECT * FROM thematic_unit WHERE course_id = $P{idCourse}]]>
+    </queryString>
+
+    <field name="Id" class="java.lang.Long">
+        <fieldDescription><![CDATA[id]]></fieldDescription>
+    </field>
+
+    <field name="Name" class="java.lang.String">
+        <fieldDescription><![CDATA[name]]></fieldDescription>
+    </field>
+
+    <field name="Serial_number" class="java.lang.String">
+        <fieldDescription><![CDATA[serial_number]]></fieldDescription>
+    </field>
+
+
+    <detail>
+        <band height="15">
+
+            <textField>
+                <reportElement x="0" y="0" width="50" height="15" />
+
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+
+                <textFieldExpression class="java.lang.Long">
+                    <![CDATA[$F{Id}]]>
+                </textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="150" y="0" width="150" height="15" />
+
+                <textElement textAlignment="Left" verticalAlignment="Middle"/>
+
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$F{Name}]]>
+                </textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="350" y="0" width="150" height="15" />
+
+                <textElement textAlignment="Left" verticalAlignment="Middle"/>
+
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$F{Serial_number}]]>
+                </textFieldExpression>
+            </textField>
+
+        </band>
+    </detail>
+
+</jasperReport>

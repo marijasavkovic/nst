@@ -3,6 +3,7 @@ package com.master.nst.sheard.response;
 import com.master.nst.sheard.errors.Error;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class Response<T> implements Serializable {
     private T data;
     private ResponseStatus status = ResponseStatus.OK;
     private String message;
-    private List<Error> errors;
+    private List<Error> errors = new ArrayList<>();
 
     public Response(T data) {
         this.data = data;

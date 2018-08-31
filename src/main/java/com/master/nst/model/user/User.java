@@ -1,7 +1,7 @@
 package com.master.nst.model.user;
 
-import com.master.nst.domain.EmployeeEntity;
 import com.master.nst.domain.UserRole;
+import com.master.nst.model.employee.Employee;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ public class User implements Serializable{
     private String password;
     private String email;
     private UserRole role;
-    private EmployeeEntity employee;
+    private Employee employee;
 
     public User() {
     }
@@ -22,7 +22,7 @@ public class User implements Serializable{
         final String password,
         final String email,
         final UserRole role,
-        final EmployeeEntity employee)
+        final Employee employee)
     {
         this.username = username;
         this.password = password;
@@ -71,11 +71,11 @@ public class User implements Serializable{
         this.role = role;
     }
 
-    public EmployeeEntity getEmployee() {
+    public Employee getEmployee() {
         return employee;
     }
 
-    public void setEmployee(final EmployeeEntity employee) {
+    public void setEmployee(final Employee employee) {
         this.employee = employee;
     }
 

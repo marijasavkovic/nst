@@ -23,11 +23,16 @@ public class UserIndexer {
     @Value("${elasticsearch.usertype}")
     private String userType;
 
+    public void refresh(){
+        elasticClient.admin().indices().prepareRefresh().get();
+    }
+
     public void indexUser(UserEntity userEntity) throws Exception {
         elasticClient
             .prepareIndex(userIndex, userType, String.valueOf(userEntity.getId()))
             .setSource(buildUser(userEntity))
             .get();
+        refresh();
     }
 
     public void updateUser(UserEntity userEntity) throws Exception {
@@ -35,6 +40,7 @@ public class UserIndexer {
             .prepareUpdate(userIndex, userType, String.valueOf(userEntity.getId()))
             .setDoc(buildUser(userEntity))
             .get();
+        refresh();
     }
 
     public void createUserIndexIfNotExists() {
@@ -55,6 +61,7 @@ public class UserIndexer {
 
     public void deleteUser(long userId) {
         elasticClient.prepareDelete(userIndex, userType, String.valueOf(userId)).get();
+        refresh();
     }
 
     public XContentBuilder buildUser(UserEntity userEntity) throws Exception {

@@ -1,6 +1,5 @@
 package com.master.nst.model.user;
 
-import com.master.nst.domain.EmployeeEntity;
 import com.master.nst.domain.UserRole;
 import com.master.nst.sheard.errors.ErrorMessages;
 import com.master.nst.sheard.validation.ValidationGroups;
@@ -14,13 +13,13 @@ public class UserCmd {
     private Long id;
     @NotEmpty(message = ErrorMessages.USERNAME_EMPTY, groups = ValidationGroups.Add.class)
     private String username;
-    @NotEmpty(message = ErrorMessages.PASSWORD_EMPTY,  groups = ValidationGroups.Add.class)
+    @NotEmpty(message = ErrorMessages.PASSWORD_EMPTY)
     private String password;
-    @NotEmpty(message = ErrorMessages.EMAIL_EMPTY,  groups = ValidationGroups.Add.class)
+    @NotEmpty(message = ErrorMessages.EMAIL_EMPTY)
     private String email;
     @NotNull(message = ErrorMessages.USER_ROLE_NULL)
     private UserRole role;
-    @NotNull(message = ErrorMessages.EMPLOYEE_NULL)
+    @NotNull(message = ErrorMessages.EMPLOYEE_NULL, groups = ValidationGroups.Add.class)
     private Long employeeId;
 
     public UserCmd() {
@@ -80,11 +79,11 @@ public class UserCmd {
         this.role = role;
     }
 
-    public Long getEmployee() {
+    public Long getEmployeeId() {
         return employeeId;
     }
 
-    public void setEmployee(final Long employeeId) {
+    public void setEmployeeId(final Long employeeId) {
         this.employeeId = employeeId;
     }
 

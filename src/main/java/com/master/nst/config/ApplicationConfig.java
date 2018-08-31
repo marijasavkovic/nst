@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 @ComponentScan("com.master.nst.config")
 public class ApplicationConfig {
 
-    @Bean
+    @Bean("mysqlDataSource")
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();

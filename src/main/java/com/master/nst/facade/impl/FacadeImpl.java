@@ -27,6 +27,7 @@ import com.master.nst.sheard.validation.ValidationGroups;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,48 +70,56 @@ public class FacadeImpl implements Facade {
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("levelOfStudies/findAllLevelsOfStudies")
     public Response<List<LevelOfStudies>> findAllLevelOfStudies() {
         return levelOfStudiesService.findAll();
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("department/findAllDepartments")
     public Response<List<Department>> findAllDepartments() {
         return departmentService.findAll();
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("teachingType/findAllTeachingTypes")
     public Response<List<TeachingType>> findAllTeachingTypes() {
         return teachingTypeService.findAll();
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("employee/findAllEmployees")
     public Response<List<EmployeeRecord>> findAllEmployees() {
         return employeeService.findAll();
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("employee/{employeeId}")
     public Response<Employee> findEmployeeById(@PathVariable Long employeeId) {
         return employeeService.findById(employeeId);
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("employee")
     public Response<Employee> addEmployee(@Validated(ValidationGroups.Add.class) @RequestBody EmployeeCmd employeeCmd) {
         return employeeService.add(employeeCmd);
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("employee/{employeeId}")
     public Response<Employee> editEmployee(@PathVariable Long employeeId, @Validated(ValidationGroups.Edit.class) @RequestBody EmployeeCmd employeeCmd) {
         return employeeService.edit(employeeId, employeeCmd);
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping(path = "employee/{employeeId}")
     public Response<?> deleteEmployee(@PathVariable Long employeeId) {
         return employeeService.delete(employeeId);
@@ -123,42 +132,49 @@ public class FacadeImpl implements Facade {
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("user/findAllUsers")
     public Response<List<UserRecord>> findAllUsers() {
         return userService.findAll();
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("user/{userId}")
     public Response<User> findUserById(@PathVariable Long userId) {
         return userService.findById(userId);
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("user")
     public Response<User> addUser(@Validated(ValidationGroups.Add.class) @RequestBody UserCmd userCmd) {
         return userService.add(userCmd);
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("user/{userId}")
     public Response<User> editUser(@PathVariable  Long userId, @Validated(ValidationGroups.Edit.class) @RequestBody  UserCmd userCmd) {
         return userService.edit(userId, userCmd);
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping(path = "user/{userId}")
     public Response<?> deleteUser(@PathVariable Long userId) {
         return userService.delete(userId);
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("course/findAllCourses")
     public Response<List<CourseRecord>> findAllCourses() {
         return courseService.findAll();
     }
 
     @Override
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("course/{courseId}")
     public Response<Course> findCourseById(@PathVariable Long courseId) {
         return courseService.findById(courseId);

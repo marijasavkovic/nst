@@ -30,12 +30,18 @@ public class EmployeeIndexer {
                           String.valueOf(employeeEntity.getId()))
             .setSource(buildEmployee(employeeEntity))
             .get();
+        refresh();
+    }
+
+    public void refresh(){
+        elasticClient.admin().indices().prepareRefresh().get();
     }
 
     public void updateEmployee(EmployeeEntity employeeEntity) throws Exception {
         elasticClient.prepareUpdate(
             employeeIndex, employeeType, String.valueOf(employeeEntity.getId()))
             .setDoc(buildEmployee(employeeEntity)).get();
+        refresh();
     }
 
     public void createEmployeeIndexIfNotExists() {
@@ -59,8 +65,8 @@ public class EmployeeIndexer {
     }
 
     public void deleteEmployee(Long employeeId) {
-        elasticClient.prepareDelete(employeeIndex,
-                                                employeeType, String.valueOf(employeeId)).get();
+        elasticClient.prepareDelete(employeeIndex, employeeType, String.valueOf(employeeId)).get();
+        refresh();
     }
 
     public XContentBuilder buildEmployee(EmployeeEntity employeeEntity) throws Exception {

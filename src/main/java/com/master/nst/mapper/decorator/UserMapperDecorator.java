@@ -1,15 +1,11 @@
 package com.master.nst.mapper.decorator;
 
-import com.master.nst.domain.CourseEntity;
 import com.master.nst.domain.EmployeeEntity;
 import com.master.nst.domain.UserEntity;
 import com.master.nst.elasticsearch.service.EmployeeElasticService;
 import com.master.nst.mapper.UserMapper;
-import com.master.nst.model.course.CourseRecord;
-import com.master.nst.model.user.User;
 import com.master.nst.model.user.UserCmd;
 import com.master.nst.model.user.UserRecord;
-import com.master.nst.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -51,8 +47,8 @@ public abstract class UserMapperDecorator implements UserMapper {
     public UserEntity mapToEntity(final UserCmd model) {
         UserEntity userEntity = userMapper.mapToEntity(model);
 
-        if(model.getEmployee() != null){
-            userEntity.setEmployee(getEmployee(model.getEmployee()));
+        if(model.getEmployeeId() != null){
+            userEntity.setEmployee(getEmployee(model.getEmployeeId()));
         }
 
         return userEntity;
@@ -65,8 +61,8 @@ public abstract class UserMapperDecorator implements UserMapper {
         }
         userMapper.updateEntityFromModel(model, entity);
 
-        if(model.getEmployee() != null){
-            entity.setEmployee(getEmployee(model.getEmployee()));
+        if(model.getEmployeeId() != null){
+            entity.setEmployee(getEmployee(model.getEmployeeId()));
         }
     }
 
