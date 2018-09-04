@@ -1,7 +1,5 @@
 package com.master.nst.controller;
 
-import com.master.nst.elasticsearch.service.EmployeeElasticService;
-import com.master.nst.repository.CourseRepository;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -14,65 +12,43 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import net.sf.jasperreports.export.SimplePdfReportConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 @RestController
-public class MyController {
+public class ReportController {
 
     @Autowired
     private DataSource mysqlDataSource;
 
-    @Autowired
-    private ApplicationContext appContext;
+    @RequestMapping(path = "/report/pdf", method = RequestMethod.GET)
+    public void reportPdf(HttpServletResponse response) throws SQLException, JRException {
+        report();
+        try {
+            InputStream is = new FileInputStream("courseReport.pdf");
+            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            throw new RuntimeException("IOError writing file to output stream");
+        }
+    }
 
-    @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
-    private EmployeeElasticService employeeRepository;
-
-    //    @RequestMapping(path = "/pdf", method = RequestMethod.GET)
-    //    public ModelAndView report() {
-    //
-    //        JasperReportsPdfView view = new JasperReportsPdfView();
-    //        view.setUrl("classpath:courseReport.jrxml");
-    //        view.setApplicationContext(appContext);
-    //
-    //        Map<String, Object> params = new HashMap<>();
-    //        params.put("datasource", courseRepository.findAll());
-    //
-    //        return new ModelAndView(view, params);
-    //    }
-    //
-    //    @RequestMapping(path = "/employee/pdf", method = RequestMethod.GET)
-    //    public ModelAndView employeeReport() {
-    //
-    //        JasperReportsPdfView view = new JasperReportsPdfView();
-    //        view.setUrl("classpath:thematicUnitReport.jrxml");
-    //        view.setApplicationContext(appContext);
-    //
-    //        Map<String, Object> params = new HashMap<>();
-    //        params.put("datasource", employeeRepository.findAll());
-    //
-    //        return new ModelAndView(view, params);
-    //    }
-
-    @RequestMapping(path = "/pdf", method = RequestMethod.GET)
-    public void report() throws JRException, SQLException {
-        InputStream employeeReportStream = getClass().getResourceAsStream("/courseReport.jrxml");
+    private void report() throws JRException, SQLException {
+        InputStream employeeReportStream = getClass().getResourceAsStream("/report/courseReport.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(employeeReportStream);
 
         JRSaver.saveObject(jasperReport, "courseReport.jasper");
 
-        InputStream emailReportStream = getClass().getResourceAsStream("/thematicUnitReport.jrxml");
+        InputStream emailReportStream = getClass().getResourceAsStream("/report/thematicUnitReport.jrxml");
         JRSaver.saveObject(JasperCompileManager.compileReport(emailReportStream), "thematicUnitReport.jasper");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, mysqlDataSource.getConnection());

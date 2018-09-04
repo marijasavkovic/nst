@@ -2,7 +2,6 @@ package com.master.nst.mapper.decorator;
 
 import com.master.nst.domain.CourseEntity;
 import com.master.nst.domain.DepartmentEntity;
-import com.master.nst.domain.EmployeeEntity;
 import com.master.nst.domain.LecturerEntity;
 import com.master.nst.domain.LevelOfStudiesEntity;
 import com.master.nst.domain.TeachingTypeEntity;
@@ -18,7 +17,6 @@ import com.master.nst.model.lecturer.LecturerCmd;
 import com.master.nst.model.thematicunit.ThematicUnit;
 import com.master.nst.model.thematicunit.ThematicUnitCmd;
 import com.master.nst.repository.DepartmentRepository;
-import com.master.nst.repository.EmployeeRepository;
 import com.master.nst.repository.LevelOfStudiesRepository;
 import com.master.nst.repository.TeachingTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
